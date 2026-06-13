@@ -141,6 +141,13 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
   const filteredRet = useMemo(() => sortFlights(applyFilters(returnFlights)),   [returnFlights,   sortFlights, applyFilters])
   const showReturn  = tripType === 'roundTrip' && !!selectedOutbound
 
+  // Cheapest return leg price — used to show estimated RT total on outbound cards
+  const minReturnPrice = useMemo(() =>
+    tripType === 'roundTrip' && returnFlights.length
+      ? Math.min(...returnFlights.map(f => getPriceForClass(f, cabinClass)))
+      : undefined,
+  [tripType, returnFlights, cabinClass])
+
   if (!from || !to || !date) return (
     <div className="text-center py-20 text-gray-400">Enter a search above to find flights.</div>
   )
@@ -255,6 +262,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
             onSelect={f => tripType === 'oneWay' ? selectFlight(f) : setSelectedOutbound(f)}
             label={`${fromAirport?.city ?? from} (${from}) → ${toAirport?.city ?? to} (${to}) · ${date}`}
             cheapest={cheapestPrice}
+            minReturnPrice={minReturnPrice}
           />
         )}
       </div>
@@ -264,10 +272,10 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
 
 // ── Flight list ────────────────────────────────────────────────────────────
 
-function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSelect, label, cheapest, loading, source, outboundPrice }: {
+function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSelect, label, cheapest, loading, source, outboundPrice, minReturnPrice }: {
   flights: Flight[]; cabinClass: 'economy'|'business'|'first'; passengers: number
   sort: SortKey; onSortChange: (s: SortKey) => void; onSelect: (f: Flight) => void
-  label: string; cheapest: number; loading: boolean; source: Source; outboundPrice?: number
+  label: string; cheapest: number; loading: boolean; source: Source; outboundPrice?: number; minReturnPrice?: number
 }) {
   return (
     <div>
@@ -311,7 +319,7 @@ function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSel
           {flights.map((f, idx) => (
             <FlightCard key={f.id} flight={f} cabinClass={cabinClass} passengers={passengers}
               onSelect={onSelect} isCheapest={idx === 0 && getPriceForClass(f, cabinClass) === cheapest}
-              outboundPrice={outboundPrice} />
+              outboundPrice={outboundPrice} minReturnPrice={minReturnPrice} />
           ))}
         </div>
       )}
@@ -348,9 +356,9 @@ function SkeletonCard() {
 
 // ── Flight card ─────────────────────────────────────────────────────────────
 
-function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outboundPrice }: {
+function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outboundPrice, minReturnPrice }: {
   flight: Flight; cabinClass: 'economy'|'business'|'first'; passengers: number
-  onSelect: (f: Flight) => void; isCheapest: boolean; outboundPrice?: number
+  onSelect: (f: Flight) => void; isCheapest: boolean; outboundPrice?: number; minReturnPrice?: number
 }) {
   const price     = getPriceForClass(flight, cabinClass)
   const classData = flight[cabinClass]
@@ -461,11 +469,17 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outb
 
           {/* Price + CTA */}
           <div className="text-right shrink-0 ml-1">
-            {outboundPrice ? (
+            {outboundPrice !== undefined ? (
               <>
                 <p className="text-2xl font-black text-gray-900 tabular-nums">${(outboundPrice + price) * passengers}</p>
                 <p className="text-xs text-gray-400 mb-1.5">round trip total</p>
                 <p className="text-xs text-gray-500 mb-1.5">+${price * passengers} this leg</p>
+              </>
+            ) : minReturnPrice !== undefined ? (
+              <>
+                <p className="text-2xl font-black text-gray-900 tabular-nums">${(price + minReturnPrice) * passengers}</p>
+                <p className="text-xs text-gray-400 mb-1.5">round trip total</p>
+                <p className="text-xs text-gray-500 mb-1.5">outbound ${price * passengers}</p>
               </>
             ) : (
               <>
@@ -478,7 +492,7 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outb
             )}
             <button onClick={() => onSelect(flight)}
               className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors w-full shadow-sm">
-              {outboundPrice ? 'Book trip' : 'Select'}
+              {outboundPrice !== undefined ? 'Book trip' : minReturnPrice !== undefined ? 'Select outbound' : 'Select'}
             </button>
           </div>
         </div>

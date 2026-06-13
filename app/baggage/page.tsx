@@ -44,7 +44,7 @@ const AIRLINES = [
     checked2: 'FREE',
     oversize: '$75+',
     maxWeight: '50 lb (23 kg)',
-    note: 'Southwest includes 2 free checked bags for all passengers — no elite status required.',
+    note: 'Southwest does not charge change fees on any fare. Cancellations can be converted to travel credit at no charge on all fare types.',
   },
   {
     name: 'JetBlue Airways',
