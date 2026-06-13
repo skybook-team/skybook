@@ -1,3 +1,5 @@
+import { getScheduledFlights, applyDatePricing } from './schedule'
+
 export interface Airport {
   code: string
   city: string
@@ -271,7 +273,6 @@ export const AIRLINES: Airline[] = [
   { code: 'WN', name: 'Southwest Airlines', color: '#304CB2', logoUrl: GSTATIC('WN') },
   { code: 'B6', name: 'JetBlue Airways',    color: '#0033A0', logoUrl: GSTATIC('B6') },
   { code: 'AS', name: 'Alaska Airlines',    color: '#0074C8', logoUrl: GSTATIC('AS') },
-  { code: 'NK', name: 'Spirit Airlines',    color: '#FFD700', logoUrl: GSTATIC('NK') },
   { code: 'F9', name: 'Frontier Airlines',  color: '#007A3E', logoUrl: GSTATIC('F9') },
 ]
 
@@ -282,7 +283,6 @@ const AIRCRAFT: Record<string, string[]> = {
   WN: ['Boeing 737-800', 'Boeing 737 MAX 8', 'Boeing 737-700', 'Boeing 737 MAX 7'],
   B6: ['Airbus A320', 'Airbus A321', 'Airbus A220-300', 'Embraer E190', 'Airbus A321neo'],
   AS: ['Boeing 737-900ER', 'Boeing 737-800', 'Airbus A320', 'Embraer E175', 'Boeing 737 MAX 9'],
-  NK: ['Airbus A320', 'Airbus A321neo', 'Airbus A319'],
   F9: ['Airbus A320neo', 'Airbus A321neo', 'Airbus A319neo'],
 }
 
@@ -293,12 +293,11 @@ const BAGGAGE: Record<string, { carryOnIncluded: boolean; checkedBagPrice: numbe
   WN: { carryOnIncluded: true,  checkedBagPrice: null },
   B6: { carryOnIncluded: true,  checkedBagPrice: 35 },
   AS: { carryOnIncluded: true,  checkedBagPrice: 30 },
-  NK: { carryOnIncluded: false, checkedBagPrice: 45 },
   F9: { carryOnIncluded: false, checkedBagPrice: 49 },
 }
 
 const AIRLINE_PRICE_FACTOR: Record<string, number> = {
-  AA: 1.0, DL: 1.05, UA: 0.98, WN: 0.88, B6: 0.85, AS: 0.90, NK: 0.60, F9: 0.62,
+  AA: 1.0, DL: 1.05, UA: 0.98, WN: 0.88, B6: 0.85, AS: 0.90, F9: 0.62,
 }
 
 // Major hub airports used as connection points for 1-stop itineraries
@@ -348,6 +347,52 @@ export function generateFlights(from: string, to: string, date: string): Flight[
   const toAirport   = AIRPORTS.find(a => a.code === to)
   if (!fromAirport || !toAirport || from === to) return []
 
+  // ── Use real schedule database when available ──────────────────────────
+  const scheduled = getScheduledFlights(from, to, date)
+  if (scheduled && scheduled.length > 0) {
+    const today   = new Date(); today.setHours(0,0,0,0)
+    const dep     = new Date(date)
+    const daysOut = Math.round((dep.getTime() - today.getTime()) / 86400000)
+    // Seats left decreases as departure approaches
+    const maxSeats = daysOut <= 3 ? 4 : daysOut <= 7 ? 9 : daysOut <= 21 ? 22 : 45
+
+    return scheduled.map((sf, i) => {
+      const airline = AIRLINES.find(a => a.code === sf.code) ??
+        { code: sf.code, name: sf.code, color: '#555', logoUrl: `https://www.gstatic.com/flights/airline_logos/70px/${sf.code}.png` }
+      const baggage = BAGGAGE[sf.code] || { carryOnIncluded: true, checkedBagPrice: 35 }
+
+      const [hh, mm] = sf.dep.split(':').map(Number)
+      const depDate  = new Date(`${date}T00:00:00`)
+      depDate.setHours(hh, mm, 0, 0)
+      const arrDate  = new Date(depDate.getTime() + sf.dur * 60000)
+
+      const economyPrice = applyDatePricing(sf.fare, date)
+      // Seed seats to be deterministic per flight
+      const r = seededRand(`${from}-${to}-${date}-sched-${i}`)
+      const seatsLeft = 1 + Math.floor(r() * maxSeats)
+
+      return {
+        id:             `sched-${from}-${to}-${date}-${sf.code}${sf.num}`,
+        flightNumber:   `${sf.code} ${sf.num}`,
+        airline,
+        origin:         fromAirport,
+        destination:    toAirport,
+        departureTime:  depDate.toISOString(),
+        arrivalTime:    arrDate.toISOString(),
+        durationMinutes:sf.dur,
+        stops:          sf.stops ?? 0,
+        stopCity:       sf.via,
+        aircraft:       sf.ac,
+        carryOnIncluded:baggage.carryOnIncluded,
+        checkedBagPrice:baggage.checkedBagPrice,
+        economy:  { price: economyPrice,                                  seatsLeft },
+        business: { price: Math.round(economyPrice * 2.8 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
+        first:    { price: Math.round(economyPrice * 5.5 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
+      } as Flight
+    }).sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime())
+  }
+
+  // ── Fallback: haversine-based random generation for unlisted routes ────
   const baseDuration = getBaseDuration(from, to)
   const countRand = seededRand(`${from}-${to}-${date}-count`)
   const count = 7 + Math.floor(countRand() * 4)
@@ -362,7 +407,7 @@ export function generateFlights(from: string, to: string, date: string): Flight[
 
     const flightNumRanges: Record<string, [number, number]> = {
       AA: [1, 3999], DL: [1, 4999], UA: [1, 5999], WN: [1, 9999],
-      B6: [1, 2999], AS: [1, 999],  NK: [1, 999],  F9: [1, 999],
+      B6: [1, 2999], AS: [1, 999],  F9: [1, 999],
     }
     const [min, max] = flightNumRanges[airline.code] || [100, 9999]
     const flightNum = `${airline.code} ${min + Math.floor(r() * (max - min))}`

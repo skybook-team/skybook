@@ -12,7 +12,8 @@ interface AirportPickerProps {
   dark?: boolean
 }
 
-const DEFAULT_US = AIRPORTS.filter(a => a.country === 'US').slice(0, 8)
+const POPULAR_CODES = ['ATL','ORD','LAX','DFW','DEN','JFK','SFO','SEA','BNA','MIA','LAS','BOS','PHX','LGA']
+const DEFAULT_US = AIRPORTS.filter(a => POPULAR_CODES.includes(a.code))
 
 export default function AirportPicker({ value, onChange, placeholder = 'City or airport code', excludeCode, label, dark }: AirportPickerProps) {
   const [query, setQuery]   = useState('')

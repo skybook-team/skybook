@@ -1,21 +1,10 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 import { useState } from 'react'
 
-const TABS = [
-  { label: 'Flights',  href: '/',  icon: '✈️' },
-  { label: 'Hotels',   href: '#',  icon: '🏨' },
-  { label: 'Cars',     href: '#',  icon: '🚗' },
-  { label: 'Packages', href: '#',  icon: '📦' },
-]
-
 export default function Navbar() {
-  const pathname   = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
-
-  const isSearchPage = pathname === '/search' || pathname.startsWith('/booking') || pathname.startsWith('/confirmation')
 
   return (
     <header className="bg-white shadow-sm sticky top-0 z-50">
@@ -34,26 +23,6 @@ export default function Navbar() {
             </span>
           </Link>
 
-          {/* Service tabs — hidden on booking/search/confirmation pages */}
-          {!isSearchPage && (
-            <nav className="hidden md:flex items-center gap-1 mx-6">
-              {TABS.map(tab => (
-                <Link
-                  key={tab.label}
-                  href={tab.href}
-                  className={`flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium transition-colors ${
-                    tab.label === 'Flights'
-                      ? 'bg-blue-600 text-white'
-                      : 'text-gray-500 hover:text-gray-800 hover:bg-gray-100'
-                  }`}
-                >
-                  <span className="text-xs">{tab.icon}</span>
-                  {tab.label}
-                </Link>
-              ))}
-            </nav>
-          )}
-
           {/* Right side */}
           <div className="flex items-center gap-2">
             <Link
@@ -66,7 +35,6 @@ export default function Navbar() {
               My Trips
             </Link>
 
-            {/* Mobile hamburger */}
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
               className="sm:hidden p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
@@ -81,18 +49,7 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="sm:hidden border-t border-gray-100 bg-white px-4 py-3 space-y-1">
-          {TABS.map(t => (
-            <Link
-              key={t.label}
-              href={t.href}
-              className="block py-2 text-sm font-medium text-gray-700"
-              onClick={() => setMobileOpen(false)}
-            >
-              {t.icon} {t.label}
-            </Link>
-          ))}
-          <hr className="my-2 border-gray-100" />
+        <div className="sm:hidden border-t border-gray-100 bg-white px-4 py-3">
           <Link
             href="/account"
             className="block py-2 text-sm font-medium text-gray-700"
