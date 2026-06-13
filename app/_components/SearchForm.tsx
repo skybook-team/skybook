@@ -54,21 +54,23 @@ export default function SearchForm({ compact = false, defaultValues = {} }: Sear
     router.push(`/search?${params}`)
   }
 
-  const inputClass = `w-full border border-gray-300 hover:border-gray-400 rounded-lg px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow`
-  const labelClass = compact ? 'block text-xs font-semibold mb-1 text-gray-600' : 'block text-xs font-semibold mb-1 text-white/80'
+  const inputClass = `w-full border rounded-xl px-3 py-2.5 text-sm text-gray-900 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-shadow ${compact ? 'border-gray-300 hover:border-gray-400' : 'border-white/30 hover:border-white/60 shadow-sm'}`
+  const labelClass = compact ? 'block text-xs font-semibold mb-1 text-gray-600' : 'block text-xs font-semibold mb-1.5 text-white/80 tracking-wide'
 
   return (
     <form onSubmit={handleSubmit} className="w-full">
       {/* Trip type toggle (non-compact shows above the grid) */}
       {!compact && (
-        <div className="flex gap-1 mb-4">
+        <div className="flex gap-2 mb-5">
           {(['roundTrip', 'oneWay'] as const).map(t => (
             <button
               key={t}
               type="button"
               onClick={() => setTripType(t)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
-                tripType === t ? 'bg-blue-600 text-white' : 'bg-white/20 text-white hover:bg-white/30'
+              className={`px-5 py-1.5 rounded-full text-sm font-semibold transition-all ${
+                tripType === t
+                  ? 'bg-white text-blue-700 shadow-md'
+                  : 'border border-white/40 text-white/80 hover:bg-white/15 hover:border-white/60'
               }`}
             >
               {t === 'roundTrip' ? 'Round Trip' : 'One Way'}
@@ -163,7 +165,11 @@ export default function SearchForm({ compact = false, defaultValues = {} }: Sear
         <div className={`flex items-end ${compact ? '' : 'sm:col-span-2 lg:col-span-4 mt-1'}`}>
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 active:bg-orange-700 text-white font-bold py-2.5 px-6 rounded-lg transition-colors text-sm shadow-sm"
+            className={`w-full font-bold py-2.5 px-6 rounded-xl transition-all text-sm shadow-md active:scale-95 ${
+              compact
+                ? 'bg-orange-500 hover:bg-orange-600 text-white'
+                : 'bg-gradient-to-r from-orange-500 to-pink-500 hover:from-orange-400 hover:to-pink-400 text-white shadow-orange-500/30 hover:shadow-lg hover:shadow-orange-500/40'
+            }`}
           >
             Search Flights
           </button>
