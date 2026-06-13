@@ -120,7 +120,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
             <span className="text-gray-400">·</span>
             <span className="capitalize">{cabinClass}</span>
             <span className="text-gray-400">·</span>
-            <span>{passengerCount} pax</span>
+            <span>{passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'}</span>
           </div>
 
           {/* Step indicator */}
