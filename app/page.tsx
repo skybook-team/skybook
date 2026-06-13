@@ -1,5 +1,6 @@
 import SearchForm from '@/app/_components/SearchForm'
 import AirlineLogoGrid from '@/app/_components/AirlineLogoGrid'
+import BookingCounter from '@/app/_components/BookingCounter'
 import Link from 'next/link'
 
 const DEALS = [
@@ -149,6 +150,83 @@ export default function Home() {
               </div>
               <h3 className="font-black text-gray-900 text-lg mb-2">{f.title}</h3>
               <p className="text-gray-500 text-sm leading-relaxed">{f.body}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── Booking Counter ── */}
+      <section className="bg-white border-y border-gray-100 py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 text-center">
+            <BookingCounter target={3847291} label="Flights booked" />
+            <BookingCounter target={98}     label="Satisfaction rate" suffix="%" />
+            <BookingCounter target={150}    label="US airports" suffix="+" />
+            <BookingCounter target={12}     label="Partner airlines" suffix="+" />
+          </div>
+        </div>
+      </section>
+
+      {/* ── Testimonials ── */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center mb-10">
+          <h2 className="text-3xl font-black text-gray-900 mb-2">Travelers love SkyBook</h2>
+          <div className="flex justify-center items-center gap-1 text-yellow-400 text-lg">★★★★★</div>
+          <p className="text-gray-500 text-sm mt-1">4.8 out of 5 · 14,200+ reviews</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
+          {[
+            {
+              name: 'Rachel T.',   city: 'Chicago, IL',
+              stars: 5,
+              text: 'Found a flight from ORD to MIA for $138 round-trip. I\'ve been checking other sites for weeks and nothing came close. Booked in under 2 minutes.',
+              initials: 'RT', color: 'from-rose-500 to-pink-600',
+            },
+            {
+              name: 'Marcus W.',  city: 'Los Angeles, CA',
+              stars: 5,
+              text: 'The price breakdown is totally transparent — no surprise fees at checkout. What I saw was what I paid. Definitely my go-to now for domestic flights.',
+              initials: 'MW', color: 'from-blue-500 to-indigo-600',
+            },
+            {
+              name: 'Priya S.',   city: 'New York, NY',
+              stars: 5,
+              text: 'Seat selection and the whole booking flow was smooth and fast. Got my confirmation email immediately. Flying to SFO next week, can\'t wait!',
+              initials: 'PS', color: 'from-violet-500 to-purple-600',
+            },
+            {
+              name: 'James O.',   city: 'Houston, TX',
+              stars: 5,
+              text: 'Booked a last-minute flight to Denver and it was cheaper than anything else I found. The "seats left" warning made me act fast — good thing I did.',
+              initials: 'JO', color: 'from-emerald-500 to-teal-600',
+            },
+            {
+              name: 'Diane K.',   city: 'Seattle, WA',
+              stars: 5,
+              text: 'I love that it shows the round-trip total upfront on the search results. Other sites make you click through to see the real price. SkyBook is honest.',
+              initials: 'DK', color: 'from-orange-500 to-amber-600',
+            },
+            {
+              name: 'Anthony R.', city: 'Atlanta, GA',
+              stars: 5,
+              text: 'Used it for a work trip to Boston. The filtering by departure time was super helpful. Found a nonstop at 7am and was in meetings by noon. Excellent.',
+              initials: 'AR', color: 'from-cyan-500 to-sky-600',
+            },
+          ].map(r => (
+            <div key={r.name} className="bg-white rounded-2xl border border-gray-100 p-6 shadow-sm hover:shadow-md transition-shadow">
+              <div className="flex items-center gap-1 text-yellow-400 text-sm mb-3">
+                {'★'.repeat(r.stars)}
+              </div>
+              <p className="text-gray-600 text-sm leading-relaxed mb-4">&ldquo;{r.text}&rdquo;</p>
+              <div className="flex items-center gap-3">
+                <div className={`w-9 h-9 rounded-full bg-gradient-to-br ${r.color} flex items-center justify-center text-white text-xs font-black shrink-0`}>
+                  {r.initials}
+                </div>
+                <div>
+                  <p className="text-sm font-bold text-gray-900">{r.name}</p>
+                  <p className="text-xs text-gray-400">{r.city}</p>
+                </div>
+              </div>
             </div>
           ))}
         </div>

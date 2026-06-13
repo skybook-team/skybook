@@ -500,18 +500,45 @@ function PaymentStep({ totalPrice, contactEmail, onComplete, onBack }: {
 
   return (
     <form onSubmit={handleSubmit}>
+      {/* Secure checkout banner */}
+      <div className="bg-green-50 border border-green-200 rounded-xl p-3 mb-4 flex items-center gap-3">
+        <svg className="w-5 h-5 text-green-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+        </svg>
+        <div>
+          <p className="text-xs font-bold text-green-800">Secure Checkout</p>
+          <p className="text-[11px] text-green-700">Your payment is protected by 256-bit SSL encryption</p>
+        </div>
+      </div>
+
       <div className="bg-white rounded-xl border border-gray-200 p-5 mb-4">
-        <h2 className="text-lg font-semibold text-gray-900 mb-1">Payment Details</h2>
+        <div className="flex items-center justify-between mb-1">
+          <h2 className="text-lg font-semibold text-gray-900">Payment Details</h2>
+          {/* Card logos */}
+          <div className="flex items-center gap-1.5">
+            {/* Visa */}
+            <div className="h-7 px-2 rounded border border-gray-200 bg-white flex items-center justify-center">
+              <span className="text-[11px] font-black" style={{color:'#1434CB',letterSpacing:'-0.5px'}}>VISA</span>
+            </div>
+            {/* Mastercard */}
+            <div className="h-7 px-1.5 rounded border border-gray-200 bg-white flex items-center gap-0.5">
+              <div className="w-3.5 h-3.5 rounded-full bg-red-500 opacity-90" />
+              <div className="w-3.5 h-3.5 rounded-full bg-yellow-400 opacity-90 -ml-1.5" />
+            </div>
+            {/* Amex */}
+            <div className="h-7 px-2 rounded border border-gray-200 bg-[#016FD0] flex items-center">
+              <span className="text-[9px] font-black text-white tracking-tight">AMEX</span>
+            </div>
+            {/* Discover */}
+            <div className="h-7 px-2 rounded border border-gray-200 bg-white flex items-center gap-1">
+              <span className="text-[9px] font-black text-gray-700 tracking-tight">DISC</span>
+              <div className="w-3 h-3 rounded-full bg-orange-400" />
+            </div>
+          </div>
+        </div>
         <p className="text-xs text-gray-500 mb-5">
           Confirmation will be sent to <span className="font-medium text-gray-700">{contactEmail}</span>
         </p>
-
-        {/* Card type icons */}
-        <div className="flex items-center gap-2 mb-5">
-          {['VISA', 'MC', 'AMEX', 'DISC'].map(c => (
-            <div key={c} className="px-2 py-1 rounded border border-gray-200 text-xs font-bold text-gray-500">{c}</div>
-          ))}
-        </div>
 
         <div className="space-y-4">
           <div>
@@ -551,11 +578,17 @@ function PaymentStep({ totalPrice, contactEmail, onComplete, onBack }: {
           </div>
         )}
 
-        <div className="mt-5 p-3 bg-gray-50 rounded-lg flex items-center gap-2">
-          <svg className="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-          </svg>
-          <p className="text-xs text-gray-500">256-bit SSL encryption · PCI DSS compliant</p>
+        <div className="mt-5 grid grid-cols-3 gap-2">
+          {[
+            { icon: '🔒', label: '256-bit SSL' },
+            { icon: '✅', label: 'PCI DSS Level 1' },
+            { icon: '🛡️', label: 'SOC 2 Certified' },
+          ].map(b => (
+            <div key={b.label} className="p-2 bg-gray-50 rounded-lg text-center border border-gray-100">
+              <div className="text-base mb-0.5">{b.icon}</div>
+              <p className="text-[10px] font-semibold text-gray-600">{b.label}</p>
+            </div>
+          ))}
         </div>
       </div>
 
