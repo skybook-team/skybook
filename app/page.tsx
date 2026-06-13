@@ -5,8 +5,8 @@ import Link from 'next/link'
 const DEALS = [
   { from: 'JFK', to: 'LAX', fromCity: 'New York',      toCity: 'Los Angeles',  price: 178, was: 329, tags: ['Nonstop available'], color: 'from-violet-500 to-purple-600' },
   { from: 'ORD', to: 'MIA', fromCity: 'Chicago',       toCity: 'Miami',        price: 138, was: 259, tags: ['Best seller'],        color: 'from-rose-500 to-pink-600'    },
-  { from: 'LAX', to: 'LHR', fromCity: 'Los Angeles',   toCity: 'London',       price: 649, was: 1099, tags: ['Limited seats'],    color: 'from-sky-500 to-blue-600'     },
-  { from: 'JFK', to: 'CUN', fromCity: 'New York',      toCity: 'Cancún',       price: 219, was: 389, tags: ['Nonstop available'],  color: 'from-emerald-500 to-teal-600' },
+  { from: 'LAX', to: 'BOS', fromCity: 'Los Angeles',   toCity: 'Boston',       price: 189, was: 349, tags: ['Nonstop available'], color: 'from-sky-500 to-blue-600'     },
+  { from: 'JFK', to: 'MIA', fromCity: 'New York',      toCity: 'Miami',        price: 109, was: 219, tags: ['Best value'],         color: 'from-emerald-500 to-teal-600' },
   { from: 'SFO', to: 'JFK', fromCity: 'San Francisco', toCity: 'New York',     price: 168, was: 289, tags: ['Deal of the day'],    color: 'from-orange-500 to-amber-600' },
   { from: 'ATL', to: 'DEN', fromCity: 'Atlanta',       toCity: 'Denver',       price: 119, was: 219, tags: ['Nonstop'],            color: 'from-cyan-500 to-indigo-600'  },
 ]

@@ -242,25 +242,10 @@ export const AIRPORTS: Airport[] = [
   { code: 'JNU', city: 'Juneau',             name: 'Juneau International',                     country: 'US', lat: 58.3550,  lon: -134.5763 },
   { code: 'KTN', city: 'Ketchikan',          name: 'Ketchikan International',                  country: 'US', lat: 55.3557,  lon: -131.7137 },
 
-  // ── International ──
-  { code: 'LHR', city: 'London',             name: 'Heathrow Airport',                         country: 'GB', lat: 51.4700,  lon: -0.4543   },
-  { code: 'CDG', city: 'Paris',              name: 'Charles de Gaulle Airport',                country: 'FR', lat: 49.0097,  lon:  2.5479   },
-  { code: 'NRT', city: 'Tokyo',              name: 'Narita International Airport',             country: 'JP', lat: 35.7720,  lon: 140.3929  },
-  { code: 'DXB', city: 'Dubai',              name: 'Dubai International Airport',              country: 'AE', lat: 25.2532,  lon:  55.3657  },
-  { code: 'CUN', city: 'Cancun',             name: 'Cancun International Airport',             country: 'MX', lat: 21.0365,  lon: -86.8771  },
-  { code: 'YYZ', city: 'Toronto',            name: 'Toronto Pearson International',            country: 'CA', lat: 43.6777,  lon: -79.6248  },
-  { code: 'YVR', city: 'Vancouver',          name: 'Vancouver International',                  country: 'CA', lat: 49.1947,  lon: -123.1839 },
-  { code: 'YUL', city: 'Montreal',           name: 'Montréal-Trudeau International',           country: 'CA', lat: 45.4706,  lon: -73.7408  },
-  { code: 'SYD', city: 'Sydney',             name: 'Kingsford Smith Airport',                  country: 'AU', lat: -33.9399, lon: 151.1753  },
-  { code: 'MEX', city: 'Mexico City',        name: 'Benito Juárez International',              country: 'MX', lat: 19.4361,  lon: -99.0719  },
-  { code: 'GDL', city: 'Guadalajara',        name: 'Miguel Hidalgo y Costilla International',  country: 'MX', lat: 20.5218,  lon: -103.3109 },
-  { code: 'PVR', city: 'Puerto Vallarta',    name: 'Licenciado Gustavo Díaz Ordaz Intl',       country: 'MX', lat: 20.6801,  lon: -105.2541 },
-  { code: 'SJD', city: 'Los Cabos',          name: 'Los Cabos International',                  country: 'MX', lat: 23.1518,  lon: -109.7216 },
-  { code: 'NAS', city: 'Nassau',             name: 'Lynden Pindling International',            country: 'BS', lat: 25.0390,  lon: -77.4661  },
-  { code: 'MBJ', city: 'Montego Bay',        name: 'Sangster International',                   country: 'JM', lat: 18.5037,  lon: -77.9134  },
-  { code: 'SJU', city: 'San Juan',           name: 'Luis Muñoz Marín International',           country: 'PR', lat: 18.4394,  lon: -66.0018  },
-  { code: 'AUA', city: 'Aruba',              name: 'Queen Beatrix International',              country: 'AW', lat: 12.5014,  lon: -70.0152  },
-  { code: 'GCM', city: 'Grand Cayman',       name: 'Owen Roberts International',               country: 'KY', lat: 19.2928,  lon: -81.3576  },
+  // ── US Territories ──
+  { code: 'SJU', city: 'San Juan',           name: 'Luis Muñoz Marín International',           country: 'US', lat: 18.4394,  lon: -66.0018  },
+  { code: 'GUM', city: 'Guam',               name: 'Antonio B. Won Pat International',         country: 'US', lat: 13.4834,  lon: 144.7957  },
+  { code: 'PPG', city: 'Pago Pago',          name: 'Pago Pago International',                  country: 'US', lat: -14.3310, lon: -170.7106 },
 ]
 
 // Airport → IANA timezone mapping
@@ -316,13 +301,8 @@ export const AIRPORT_TZ: Record<string, string> = {
   // Alaska
   ANC:'America/Anchorage', FAI:'America/Anchorage',
   JNU:'America/Juneau',    KTN:'America/Juneau',
-  // International
-  LHR:'Europe/London',       CDG:'Europe/Paris',          NRT:'Asia/Tokyo',
-  DXB:'Asia/Dubai',          CUN:'America/Cancun',        YYZ:'America/Toronto',
-  YVR:'America/Vancouver',   YUL:'America/Toronto',       SYD:'Australia/Sydney',
-  MEX:'America/Mexico_City', GDL:'America/Mexico_City',   PVR:'America/Mexico_City',
-  SJD:'America/Mazatlan',    NAS:'America/Nassau',        MBJ:'America/Jamaica',
-  SJU:'America/Puerto_Rico', AUA:'America/Aruba',         GCM:'America/Cayman',
+  // US Territories
+  SJU:'America/Puerto_Rico', GUM:'Pacific/Guam',          PPG:'Pacific/Pago_Pago',
 }
 
 // Convert a local HH:MM time at a given IANA timezone + date to a UTC Date
