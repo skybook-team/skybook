@@ -261,15 +261,18 @@ export const AIRPORTS: Airport[] = [
   { code: 'GCM', city: 'Grand Cayman',       name: 'Owen Roberts International',               country: 'KY', lat: 19.2928,  lon: -81.3576  },
 ]
 
+// Google Flights' own airline logo CDN — same source used by google.com/flights
+const GSTATIC = (code: string) => `https://www.gstatic.com/flights/airline_logos/70px/${code}.png`
+
 export const AIRLINES: Airline[] = [
-  { code: 'AA', name: 'American Airlines',  color: '#C8102E', logoUrl: 'https://logo.clearbit.com/aa.com'          },
-  { code: 'DL', name: 'Delta Air Lines',    color: '#003DA5', logoUrl: 'https://logo.clearbit.com/delta.com'       },
-  { code: 'UA', name: 'United Airlines',    color: '#005DAA', logoUrl: 'https://logo.clearbit.com/united.com'      },
-  { code: 'WN', name: 'Southwest Airlines', color: '#304CB2', logoUrl: 'https://logo.clearbit.com/southwest.com'   },
-  { code: 'B6', name: 'JetBlue Airways',    color: '#0033A0', logoUrl: 'https://logo.clearbit.com/jetblue.com'     },
-  { code: 'AS', name: 'Alaska Airlines',    color: '#0074C8', logoUrl: 'https://logo.clearbit.com/alaskaair.com'   },
-  { code: 'NK', name: 'Spirit Airlines',    color: '#7c6f00', logoUrl: 'https://logo.clearbit.com/spirit.com'      },
-  { code: 'F9', name: 'Frontier Airlines',  color: '#007A3E', logoUrl: 'https://logo.clearbit.com/flyfrontier.com' },
+  { code: 'AA', name: 'American Airlines',  color: '#C8102E', logoUrl: GSTATIC('AA') },
+  { code: 'DL', name: 'Delta Air Lines',    color: '#003DA5', logoUrl: GSTATIC('DL') },
+  { code: 'UA', name: 'United Airlines',    color: '#005DAA', logoUrl: GSTATIC('UA') },
+  { code: 'WN', name: 'Southwest Airlines', color: '#304CB2', logoUrl: GSTATIC('WN') },
+  { code: 'B6', name: 'JetBlue Airways',    color: '#0033A0', logoUrl: GSTATIC('B6') },
+  { code: 'AS', name: 'Alaska Airlines',    color: '#0074C8', logoUrl: GSTATIC('AS') },
+  { code: 'NK', name: 'Spirit Airlines',    color: '#FFD700', logoUrl: GSTATIC('NK') },
+  { code: 'F9', name: 'Frontier Airlines',  color: '#007A3E', logoUrl: GSTATIC('F9') },
 ]
 
 const AIRCRAFT: Record<string, string[]> = {

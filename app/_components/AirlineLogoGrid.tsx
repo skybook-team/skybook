@@ -1,12 +1,14 @@
 'use client'
 
+const G = (code: string) => `https://www.gstatic.com/flights/airline_logos/70px/${code}.png`
+
 const AIRLINES_SHOWN = [
-  { name: 'American',  logo: 'https://logo.clearbit.com/aa.com',          tagline: 'Nationwide coverage' },
-  { name: 'Delta',     logo: 'https://logo.clearbit.com/delta.com',       tagline: 'Premium experience' },
-  { name: 'United',    logo: 'https://logo.clearbit.com/united.com',      tagline: 'Global network' },
-  { name: 'JetBlue',   logo: 'https://logo.clearbit.com/jetblue.com',     tagline: 'Free wi-fi & snacks' },
-  { name: 'Alaska',    logo: 'https://logo.clearbit.com/alaskaair.com',   tagline: 'West coast specialist' },
-  { name: 'Southwest', logo: 'https://logo.clearbit.com/southwest.com',   tagline: '2 free checked bags' },
+  { name: 'American',  logo: G('AA'), tagline: 'Nationwide coverage'   },
+  { name: 'Delta',     logo: G('DL'), tagline: 'Premium experience'    },
+  { name: 'United',    logo: G('UA'), tagline: 'Global network'        },
+  { name: 'JetBlue',   logo: G('B6'), tagline: 'Free wi-fi & snacks'   },
+  { name: 'Alaska',    logo: G('AS'), tagline: 'West coast specialist' },
+  { name: 'Southwest', logo: G('WN'), tagline: '2 free checked bags'   },
 ]
 
 export default function AirlineLogoGrid() {
