@@ -306,7 +306,7 @@ export const AIRPORT_TZ: Record<string, string> = {
 }
 
 // Convert a local HH:MM time at a given IANA timezone + date to a UTC Date
-function localToUTC(dateStr: string, timeStr: string, tz: string): Date {
+export function localToUTC(dateStr: string, timeStr: string, tz: string): Date {
   const probe = new Date(`${dateStr}T${timeStr}:00Z`)
   const localHHMM = new Intl.DateTimeFormat('en-US', {
     timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false,
@@ -381,7 +381,7 @@ function getBaseDuration(from: string, to: string): number {
   return Math.round(miles / 530 * 60 + 45)
 }
 
-function getBasePrice(durationMinutes: number, airlineCode: string): number {
+export function getBasePrice(durationMinutes: number, airlineCode: string): number {
   let base: number
   if      (durationMinutes < 90)  base = 42
   else if (durationMinutes < 150) base = 59

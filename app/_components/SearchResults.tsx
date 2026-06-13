@@ -13,7 +13,7 @@ interface Props {
   passengers: number; cabinClass: 'economy' | 'business' | 'first'; tripType: 'oneWay' | 'roundTrip'
 }
 type SortKey = 'best' | 'cheapest' | 'fastest' | 'earliest'
-type Source  = 'amadeus' | 'mock' | 'loading'
+type Source  = 'live' | 'mock' | 'loading'
 
 // ── Airline-specific fare class names ───────────────────────────────────────
 const FARE_NAMES: Record<string, { economy: string; business: string; first: string }> = {
@@ -62,7 +62,7 @@ async function fetchFlights(
   try {
     const r = await fetch(`/api/flights?from=${from}&to=${to}&date=${date}&passengers=${passengers}&cabinClass=${cabin}`)
     const d = await r.json()
-    if (d.flights?.length > 0) return { flights: d.flights, source: 'amadeus' }
+    if (d.flights?.length > 0) return { flights: d.flights, source: 'live' as Source }
   } catch { /* fall through */ }
   return { flights: generateFlights(from, to, date), source: 'mock' }
 }
@@ -283,9 +283,9 @@ function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSel
         <div>
           <div className="flex items-center gap-2 flex-wrap">
             <p className="text-sm font-bold text-gray-900 truncate">{label}</p>
-            {source === 'amadeus' && !loading && (
+            {source === 'live' && !loading && (
               <span className="text-[10px] font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full border border-green-200 shrink-0">
-                ✓ Live fares
+                ✓ Live schedules
               </span>
             )}
           </div>
