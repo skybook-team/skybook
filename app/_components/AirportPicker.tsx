@@ -13,7 +13,8 @@ interface AirportPickerProps {
 }
 
 const POPULAR_CODES = ['ATL','ORD','LAX','DFW','DEN','JFK','SFO','SEA','BNA','MIA','LAS','BOS','PHX','LGA']
-const DEFAULT_US = AIRPORTS.filter(a => POPULAR_CODES.includes(a.code))
+const US_AIRPORTS   = AIRPORTS.filter(a => a.country === 'US')
+const DEFAULT_US    = US_AIRPORTS.filter(a => POPULAR_CODES.includes(a.code))
 
 export default function AirportPicker({ value, onChange, placeholder = 'City or airport code', excludeCode, label, dark }: AirportPickerProps) {
   const [query, setQuery]   = useState('')
@@ -21,10 +22,10 @@ export default function AirportPicker({ value, onChange, placeholder = 'City or 
   const inputRef            = useRef<HTMLInputElement>(null)
   const containerRef        = useRef<HTMLDivElement>(null)
 
-  const selected = AIRPORTS.find(a => a.code === value)
+  const selected = US_AIRPORTS.find(a => a.code === value)
 
   const filtered = query.length >= 1
-    ? AIRPORTS
+    ? US_AIRPORTS
         .filter(a => a.code !== excludeCode)
         .filter(a =>
           a.code.toLowerCase().includes(query.toLowerCase()) ||
@@ -125,9 +126,6 @@ export default function AirportPicker({ value, onChange, placeholder = 'City or 
                   <p className="text-sm font-semibold text-gray-900 truncate">{airport.city}</p>
                   <p className="text-xs text-gray-400 truncate">{airport.name}</p>
                 </div>
-                {airport.country !== 'US' && (
-                  <span className="text-[10px] text-gray-300 font-semibold shrink-0">{airport.country}</span>
-                )}
               </button>
             ))
           ) : query.length >= 2 ? (
