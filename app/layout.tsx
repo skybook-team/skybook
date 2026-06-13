@@ -11,7 +11,20 @@ const geist = Geist({
 
 export const metadata: Metadata = {
   title: "SkyBook — Find & Book Cheap Flights",
-  description: "Search hundreds of airlines and book cheap flights with SkyBook. Compare prices, choose seats, and travel smarter.",
+  description: "Search and compare cheap flights across all major US airlines. Book flights with no booking fees, real prices, and free cancellation on select fares.",
+  keywords: ["cheap flights", "flight search", "book flights", "airline tickets", "flight deals", "SkyBook"],
+  openGraph: {
+    title: "SkyBook — Find & Book Cheap Flights",
+    description: "Search and compare cheap flights across all major US airlines. No booking fees, real prices.",
+    type: "website",
+    siteName: "SkyBook",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SkyBook — Find & Book Cheap Flights",
+    description: "Compare flights across all major US airlines. Book with no fees.",
+  },
+  robots: { index: true, follow: true },
 };
 
 export default function RootLayout({

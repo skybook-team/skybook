@@ -12,6 +12,7 @@ import {
   type Passenger,
   type PendingBooking,
   type SeatRow,
+  type SeatInfo,
   generatePNR,
 } from '@/lib/data'
 import { getPendingBooking, addBooking } from '@/lib/store'
@@ -32,6 +33,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
   const [passengers, setPassengers]     = useState<Passenger[]>([])
   const [contactEmail, setContactEmail] = useState('')
   const [selectedSeats, setSelectedSeats] = useState<string[]>([])
+  const [seatAddonCost, setSeatAddonCost] = useState(0)
 
   useEffect(() => {
     const data = getPendingBooking(flightId)
@@ -67,15 +69,15 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
   const returnPerPerson = returnFlight ? getPriceForClass(returnFlight, cabinClass) : 0
   const baseFare        = (basePerPerson + returnPerPerson) * passengerCount
   const taxes           = Math.round(baseFare * 0.14)
-  const totalPrice      = baseFare + taxes
+  const totalPrice      = baseFare + taxes + seatAddonCost
 
   const stepIndex = STEPS.findIndex(s => s.key === step)
 
   function handlePassengersComplete(pax: Passenger[], email: string) {
     setPassengers(pax); setContactEmail(email); setStep('seats'); window.scrollTo(0,0)
   }
-  function handleSeatsComplete(seats: string[]) {
-    setSelectedSeats(seats); setStep('payment'); window.scrollTo(0,0)
+  function handleSeatsComplete(seats: string[], cost: number) {
+    setSelectedSeats(seats); setSeatAddonCost(cost); setStep('payment'); window.scrollTo(0,0)
   }
   function handlePaymentComplete() {
     const bookingId = crypto.randomUUID()
@@ -90,7 +92,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
       cabinClass,
       passengersCount: passengerCount,
       baseFare,
-      addOnsCost: 0,
+      addOnsCost: seatAddonCost,
       taxes,
       totalPrice,
       contactEmail,
@@ -178,6 +180,12 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
                 <div className="text-xs text-gray-500 mb-2">
                   {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · <span className="capitalize">{cabinClass}</span>
                 </div>
+                {seatAddonCost > 0 && (
+                  <div className="flex justify-between text-gray-600 text-xs">
+                    <span>Seat selection</span>
+                    <span>+${seatAddonCost}</span>
+                  </div>
+                )}
                 <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900">
                   <span>Total</span>
                   <span className="text-blue-600">${totalPrice}</span>
@@ -333,11 +341,16 @@ function PassengerStep({ count, onComplete }: {
 
 function SeatStep({ flight, cabinClass, count, onComplete, onBack }: {
   flight: Flight; cabinClass: 'economy' | 'business' | 'first'
-  count: number; onComplete: (seats: string[]) => void; onBack: () => void
+  count: number; onComplete: (seats: string[], cost: number) => void; onBack: () => void
 }) {
   const seatMap: SeatRow[]   = generateSeatMap(flight.id, cabinClass)
   const [selected, setSelected] = useState<string[]>([])
   const [error, setError]       = useState('')
+
+  function findSeat(code: string) {
+    for (const r of seatMap) { const s = r.seats.find(s => s.code === code); if (s) return s }
+    return null
+  }
 
   function toggleSeat(code: string, taken: boolean) {
     if (taken) return
@@ -351,9 +364,11 @@ function SeatStep({ flight, cabinClass, count, onComplete, onBack }: {
 
   function handleSubmit() {
     if (selected.length < count) { setError(`Please select ${count} seat${count > 1 ? 's' : ''}.`); return }
-    onComplete(selected)
+    const cost = selected.reduce((sum, code) => sum + (findSeat(code)?.price ?? 0), 0)
+    onComplete(selected, cost)
   }
 
+  const selectedCost = selected.reduce((sum, code) => sum + (findSeat(code)?.price ?? 0), 0)
   const colLabels = cabinClass === 'first' ? ['A', 'C', '', 'D', 'F'] : ['A', 'B', 'C', '', 'D', 'E', 'F']
 
   return (
@@ -362,14 +377,25 @@ function SeatStep({ flight, cabinClass, count, onComplete, onBack }: {
         <h2 className="text-lg font-semibold text-gray-900 mb-1">Select Your Seat{count > 1 ? 's' : ''}</h2>
         <p className="text-xs text-gray-500 mb-4">Choose {count} seat{count > 1 ? 's' : ''} · <span className="capitalize">{cabinClass}</span> cabin</p>
 
-        <div className="flex items-center gap-4 mb-5 text-xs text-gray-500">
-          <div className="flex items-center gap-1.5"><div className="w-5 h-5 rounded border border-gray-300 bg-white" />Available</div>
-          <div className="flex items-center gap-1.5"><div className="w-5 h-5 rounded bg-gray-200" />Taken</div>
-          <div className="flex items-center gap-1.5"><div className="w-5 h-5 rounded bg-blue-600" />Selected</div>
+        {/* Seat type legend */}
+        <div className="flex flex-wrap gap-x-4 gap-y-2 mb-5 text-xs text-gray-500">
+          <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded bg-gray-200" />Taken</div>
+          <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded bg-blue-600" />Selected</div>
+          {cabinClass === 'economy' && (
+            <>
+              <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded border-2 border-teal-400 bg-teal-50 text-teal-700 text-[9px] font-bold flex items-center justify-center">25</div>Extra legroom</div>
+              <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded border border-gray-300 bg-white text-gray-600 text-[9px] font-medium flex items-center justify-center">15</div>Window (+$15)</div>
+              <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded border border-gray-300 bg-white text-gray-600 text-[9px] font-medium flex items-center justify-center">12</div>Aisle (+$12)</div>
+              <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded border border-gray-300 bg-white text-gray-400 text-[9px] flex items-center justify-center">–</div>Middle (free)</div>
+            </>
+          )}
+          {cabinClass !== 'economy' && (
+            <div className="flex items-center gap-1.5"><div className="w-7 h-7 rounded border border-gray-300 bg-white text-gray-600 text-[9px] font-medium flex items-center justify-center">{cabinClass === 'business' ? '20' : '40'}</div>Seat fee per seat</div>
+          )}
         </div>
 
         <div className="overflow-x-auto">
-          <div className="min-w-max mx-auto" style={{ maxWidth: 320 }}>
+          <div className="min-w-max mx-auto" style={{ maxWidth: 340 }}>
             <div className="flex items-center justify-center gap-1 mb-2 ml-8">
               {colLabels.map((c, i) => (
                 <div key={i} className={`w-7 text-center text-xs font-medium text-gray-400 ${c === '' ? 'w-3' : ''}`}>{c}</div>
@@ -394,9 +420,14 @@ function SeatStep({ flight, cabinClass, count, onComplete, onBack }: {
         </div>
 
         {selected.length > 0 && (
-          <p className="mt-4 text-sm text-gray-600 text-center">
-            Selected: <span className="font-semibold text-blue-600">{selected.join(', ')}</span>
-          </p>
+          <div className="mt-4 text-center">
+            <p className="text-sm text-gray-600">
+              Selected: <span className="font-semibold text-blue-600">{selected.join(', ')}</span>
+            </p>
+            {selectedCost > 0 && (
+              <p className="text-xs text-gray-500 mt-0.5">Seat fee: <span className="font-semibold text-gray-700">${selectedCost}</span></p>
+            )}
+          </div>
         )}
         {error && <p className="mt-2 text-xs text-red-500 text-center">{error}</p>}
       </div>
@@ -413,15 +444,20 @@ function SeatStep({ flight, cabinClass, count, onComplete, onBack }: {
   )
 }
 
-function SeatCell({ seat, selected, onClick }: { seat: { code: string; taken: boolean }; selected: boolean; onClick: () => void }) {
+function SeatCell({ seat, selected, onClick }: { seat: SeatInfo; selected: boolean; onClick: () => void }) {
+  const extraLegroom = seat.extraLegroom
   return (
-    <button type="button" onClick={onClick} disabled={seat.taken} title={seat.code}
-      className={`w-7 h-7 rounded text-xs font-medium transition-colors ${
-        seat.taken  ? 'bg-gray-200 text-gray-400 cursor-not-allowed' :
-        selected    ? 'bg-blue-600 text-white' :
-                      'bg-white border border-gray-300 text-gray-600 hover:border-blue-400 hover:bg-blue-50'
+    <button type="button" onClick={onClick} disabled={seat.taken} title={`${seat.code}${seat.price > 0 ? ` +$${seat.price}` : ' Free'}`}
+      className={`w-7 h-7 rounded text-[9px] font-semibold transition-colors ${
+        seat.taken
+          ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+          : selected
+            ? 'bg-blue-600 text-white'
+            : extraLegroom
+              ? 'border-2 border-teal-400 bg-teal-50 text-teal-700 hover:bg-teal-100'
+              : 'bg-white border border-gray-300 text-gray-500 hover:border-blue-400 hover:bg-blue-50'
       }`}>
-      {selected ? '✓' : ''}
+      {selected ? '✓' : seat.taken ? '' : seat.price > 0 ? String(seat.price) : '–'}
     </button>
   )
 }

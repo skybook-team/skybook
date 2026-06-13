@@ -576,6 +576,8 @@ export interface SeatInfo {
   taken: boolean
   type: 'window' | 'middle' | 'aisle'
   class: 'economy' | 'business' | 'first'
+  price: number
+  extraLegroom: boolean
 }
 
 export interface SeatRow {
@@ -590,15 +592,28 @@ export function generateSeatMap(flightId: string, cabinClass: 'economy' | 'busin
     cabinClass === 'business' ? { rows: 8,  start: 5,  cols: ['A', 'B', 'D', 'E'] } :
                                 { rows: 26, start: 13, cols: ['A', 'B', 'C', 'D', 'E', 'F'] }
 
-  return Array.from({ length: config.rows }, (_, rowIdx) => ({
-    row: config.start + rowIdx,
-    seats: config.cols.map(col => ({
-      code: `${config.start + rowIdx}${col}`,
-      taken: rand() < 0.42,
-      type: (col === 'A' || col === 'F') ? 'window' : (col === 'C' || col === 'D') ? 'aisle' : 'middle',
-      class: cabinClass,
-    } as SeatInfo)),
-  }))
+  return Array.from({ length: config.rows }, (_, rowIdx) => {
+    const row = config.start + rowIdx
+    return {
+      row,
+      seats: config.cols.map(col => {
+        const type: SeatInfo['type'] = (col === 'A' || col === 'F') ? 'window' : (col === 'C' || col === 'D') ? 'aisle' : 'middle'
+        const extraLegroom = cabinClass === 'economy' && row <= config.start + 2
+        let price = 0
+        if (cabinClass === 'first') {
+          price = 40
+        } else if (cabinClass === 'business') {
+          price = type === 'window' ? 30 : 20
+        } else {
+          if (extraLegroom)          price = 25
+          else if (type === 'window') price = 15
+          else if (type === 'aisle')  price = 12
+          // middle seats are free
+        }
+        return { code: `${row}${col}`, taken: rand() < 0.42, type, class: cabinClass, price, extraLegroom } as SeatInfo
+      }),
+    }
+  })
 }
 
 export function generatePNR(): string {
