@@ -646,6 +646,9 @@ export function applyDatePricing(baseFare: number, date: string): number {
   if (m === 5 && day >= 27) factor *= 1.20       // late June
   if (m === 6 && day <= 8)  factor *= 1.20       // early July
 
-  const price = Math.round(baseFare * factor * 100) / 100
+  // Add a deterministic per-fare cent offset so prices never land on a round dollar.
+  // (baseFare × simple rational factors often produce whole numbers like $171.00)
+  const centNoise = ((baseFare * 23 + 7) % 97) / 100
+  const price = Math.round((baseFare * factor + centNoise) * 100) / 100
   return Math.max(39, price)
 }
