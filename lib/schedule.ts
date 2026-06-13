@@ -624,8 +624,9 @@ export function getScheduledFlights(
 ): ScheduledFlight[] | null {
   const key = `${from}-${to}`
   if (!S[key]) return null
-  const d      = new Date(date)
-  const dow    = d.getDay()
+  // Use local noon to avoid UTC-midnight day-of-week shift for US users
+  const d   = new Date(`${date}T12:00:00`)
+  const dow = d.getDay()
   // Keep only flights that operate on this day of week
   return S[key].filter(f => !f.days || f.days.includes(dow))
 }
@@ -633,7 +634,8 @@ export function getScheduledFlights(
 export function applyDatePricing(baseFare: number, date: string): number {
   const today   = new Date()
   today.setHours(0,0,0,0)
-  const dep     = new Date(date)
+  // Use local noon to avoid UTC-midnight day-of-week shift for US users
+  const dep     = new Date(`${date}T12:00:00`)
   const daysOut = Math.round((dep.getTime() - today.getTime()) / 86400000)
   const dow     = dep.getDay()
 
