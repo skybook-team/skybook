@@ -44,8 +44,8 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Search form directly on dark bg */}
-          <div className="bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl shadow-black/30 p-6 sm:p-8">
+          {/* Search form — relative + z-10 so its dropdown always paints above trust badges */}
+          <div className="relative z-10 bg-white/10 backdrop-blur-md rounded-3xl border border-white/20 shadow-2xl shadow-black/30 p-6 sm:p-8">
             <SearchForm />
           </div>
 
@@ -57,7 +57,7 @@ export default function Home() {
               { icon: '💳', text: 'Free cancellation on select fares' },
               { icon: '🌎', text: 'All major airlines' },
             ].map(b => (
-              <span key={b.text} className="flex items-center gap-1.5 bg-white/10 border border-white/20 text-white/80 text-xs font-medium px-3 py-1.5 rounded-full backdrop-blur-sm">
+              <span key={b.text} className="flex items-center gap-1.5 bg-white/10 border border-white/20 text-white/80 text-xs font-medium px-3 py-1.5 rounded-full">
                 <span>{b.icon}</span>{b.text}
               </span>
             ))}
