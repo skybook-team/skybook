@@ -25,24 +25,29 @@ export default function Footer() {
               </svg>
               <span className="text-white font-bold text-lg">SkyBook</span>
             </div>
-            <p className="text-sm leading-relaxed">
+            <p className="text-sm leading-relaxed mb-3">
               Search and compare flights across all major US airlines. Real schedules, transparent pricing.
+            </p>
+            <p className="text-xs leading-relaxed text-gray-500">
+              601 Montgomery St, Suite 1400<br />
+              San Francisco, CA 94111<br />
+              1-800-759-2665
             </p>
           </div>
           <div>
             <h4 className="text-white font-semibold mb-3 text-sm">Company</h4>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/" className="hover:text-white transition-colors">About SkyBook</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">How it works</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Contact us</Link></li>
+              <li><Link href="/about" className="hover:text-white transition-colors">About SkyBook</Link></li>
+              <li><Link href="/about#how-it-works" className="hover:text-white transition-colors">How it works</Link></li>
+              <li><Link href="/contact" className="hover:text-white transition-colors">Contact us</Link></li>
             </ul>
           </div>
           <div>
             <h4 className="text-white font-semibold mb-3 text-sm">Support</h4>
             <ul className="space-y-2 text-sm">
               <li><Link href="/account" className="hover:text-white transition-colors">My Trips</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Help Center</Link></li>
-              <li><Link href="/" className="hover:text-white transition-colors">Baggage Policy</Link></li>
+              <li><Link href="/help" className="hover:text-white transition-colors">Help Center</Link></li>
+              <li><Link href="/baggage" className="hover:text-white transition-colors">Baggage Policy</Link></li>
             </ul>
           </div>
           <div>
@@ -64,9 +69,9 @@ export default function Footer() {
         <div className="border-t border-gray-800 pt-6 flex flex-col sm:flex-row justify-between items-center gap-3 text-xs">
           <p>© 2026 SkyBook, Inc. All rights reserved.</p>
           <div className="flex items-center gap-4">
-            <Link href="/" className="hover:text-white transition-colors">Privacy Policy</Link>
-            <Link href="/" className="hover:text-white transition-colors">Terms of Use</Link>
-            <Link href="/" className="hover:text-white transition-colors">Cookie Settings</Link>
+            <Link href="/privacy" className="hover:text-white transition-colors">Privacy Policy</Link>
+            <Link href="/terms" className="hover:text-white transition-colors">Terms of Use</Link>
+            <Link href="/contact" className="hover:text-white transition-colors">Contact</Link>
           </div>
         </div>
       </div>

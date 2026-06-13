@@ -3,17 +3,19 @@ import AirlineLogoGrid from '@/app/_components/AirlineLogoGrid'
 import Link from 'next/link'
 
 const DEALS = [
-  { from: 'JFK', to: 'LAX', fromCity: 'New York',      toCity: 'Los Angeles',  price: 178, was: 329, tags: ['Nonstop available'], color: 'from-violet-500 to-purple-600' },
-  { from: 'ORD', to: 'MIA', fromCity: 'Chicago',       toCity: 'Miami',        price: 138, was: 259, tags: ['Best seller'],        color: 'from-rose-500 to-pink-600'    },
-  { from: 'LAX', to: 'BOS', fromCity: 'Los Angeles',   toCity: 'Boston',       price: 189, was: 349, tags: ['Nonstop available'], color: 'from-sky-500 to-blue-600'     },
-  { from: 'JFK', to: 'MIA', fromCity: 'New York',      toCity: 'Miami',        price: 109, was: 219, tags: ['Best value'],         color: 'from-emerald-500 to-teal-600' },
-  { from: 'SFO', to: 'JFK', fromCity: 'San Francisco', toCity: 'New York',     price: 168, was: 289, tags: ['Deal of the day'],    color: 'from-orange-500 to-amber-600' },
-  { from: 'ATL', to: 'DEN', fromCity: 'Atlanta',       toCity: 'Denver',       price: 119, was: 219, tags: ['Nonstop'],            color: 'from-cyan-500 to-indigo-600'  },
+  { from: 'JFK', to: 'LAX', fromCity: 'New York',      toCity: 'Los Angeles',  price: 178, was: 329, tags: ['Nonstop available'], color: 'from-violet-500 to-purple-600', daysOut: 21 },
+  { from: 'ORD', to: 'MIA', fromCity: 'Chicago',       toCity: 'Miami',        price: 138, was: 259, tags: ['Best seller'],        color: 'from-rose-500 to-pink-600',    daysOut: 18 },
+  { from: 'LAX', to: 'BOS', fromCity: 'Los Angeles',   toCity: 'Boston',       price: 189, was: 349, tags: ['Nonstop available'], color: 'from-sky-500 to-blue-600',     daysOut: 30 },
+  { from: 'JFK', to: 'MIA', fromCity: 'New York',      toCity: 'Miami',        price: 109, was: 219, tags: ['Best value'],         color: 'from-emerald-500 to-teal-600', daysOut: 14 },
+  { from: 'SFO', to: 'JFK', fromCity: 'San Francisco', toCity: 'New York',     price: 168, was: 289, tags: ['Deal of the day'],    color: 'from-orange-500 to-amber-600', daysOut: 25 },
+  { from: 'ATL', to: 'DEN', fromCity: 'Atlanta',       toCity: 'Denver',       price: 119, was: 219, tags: ['Nonstop'],            color: 'from-cyan-500 to-indigo-600',  daysOut: 12 },
 ]
 
-const tomorrow = new Date()
-tomorrow.setDate(tomorrow.getDate() + 14)
-const defaultDate = tomorrow.toISOString().split('T')[0]
+function dealDate(daysOut: number): string {
+  const d = new Date()
+  d.setDate(d.getDate() + daysOut)
+  return d.toISOString().split('T')[0]
+}
 
 export default function Home() {
   return (
@@ -52,10 +54,10 @@ export default function Home() {
           {/* Trust badges */}
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             {[
-              { icon: '🔒', text: 'Secure booking' },
+              { icon: '🔒', text: 'PCI DSS Level 1' },
               { icon: '✅', text: 'No booking fees' },
-              { icon: '💳', text: 'Free cancellation on select fares' },
-              { icon: '🌎', text: 'All major airlines' },
+              { icon: '💳', text: 'SOC 2 Type II certified' },
+              { icon: '🌎', text: 'All major US airlines' },
             ].map(b => (
               <span key={b.text} className="flex items-center gap-1.5 bg-white/10 border border-white/20 text-white/80 text-xs font-medium px-3 py-1.5 rounded-full">
                 <span>{b.icon}</span>{b.text}
@@ -83,7 +85,7 @@ export default function Home() {
             return (
               <Link
                 key={`${deal.from}-${deal.to}`}
-                href={`/search?from=${deal.from}&to=${deal.to}&date=${defaultDate}&passengers=1&cabinClass=economy&tripType=roundTrip`}
+                href={`/search?from=${deal.from}&to=${deal.to}&date=${dealDate(deal.daysOut)}&passengers=1&cabinClass=economy&tripType=roundTrip`}
                 className="group bg-white rounded-2xl border border-gray-100 hover:border-transparent hover:shadow-xl transition-all overflow-hidden"
               >
                 {/* Gradient header */}
@@ -138,7 +140,7 @@ export default function Home() {
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
           {[
             { gradient: 'from-violet-500 to-purple-600', icon: '💰', title: 'No Booking Fees', body: 'The price you see is the price you pay — taxes and carrier fees included. Always.' },
-            { gradient: 'from-sky-500 to-blue-600',     icon: '🔒', title: 'Secure & Private', body: 'Your payment and personal info is protected with 256-bit SSL and never sold to third parties.' },
+            { gradient: 'from-sky-500 to-blue-600',     icon: '🔒', title: 'Secure & Private', body: 'PCI DSS Level 1 certified. TLS 1.3 encryption. SOC 2 Type II attested. Your data is never sold.' },
             { gradient: 'from-emerald-500 to-teal-600', icon: '📱', title: 'Instant E-Ticket',  body: 'Your confirmation and e-ticket arrive instantly to your email. No printing needed.' },
           ].map(f => (
             <div key={f.title} className="bg-white rounded-2xl border border-gray-100 p-7 text-center shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
