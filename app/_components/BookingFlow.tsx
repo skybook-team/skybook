@@ -174,26 +174,9 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
           <div className="lg:col-span-1">
             <div className="bg-white rounded-xl border border-gray-200 p-4 sticky top-24">
               <h3 className="font-semibold text-gray-900 mb-3 text-sm">Price Summary</h3>
-              <div className="space-y-2 text-sm">
-                <div className="flex justify-between text-gray-600">
-                  <span>Base fare ({passengerCount} pax)</span>
-                  <span>${baseFare}</span>
-                </div>
-                {returnFlight && (
-                  <>
-                    <div className="flex justify-between text-gray-500 text-xs">
-                      <span className="pl-3">Outbound</span>
-                      <span>${basePerPerson * passengerCount}</span>
-                    </div>
-                    <div className="flex justify-between text-gray-500 text-xs">
-                      <span className="pl-3">Return</span>
-                      <span>${returnPerPerson * passengerCount}</span>
-                    </div>
-                  </>
-                )}
-                <div className="flex justify-between text-gray-600">
-                  <span>Taxes &amp; fees</span>
-                  <span>${taxes}</span>
+              <div className="space-y-1.5 text-sm">
+                <div className="text-xs text-gray-500 mb-2">
+                  {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · <span className="capitalize">{cabinClass}</span>
                 </div>
                 <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900">
                   <span>Total</span>
