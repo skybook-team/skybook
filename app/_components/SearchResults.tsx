@@ -17,12 +17,12 @@ type Source  = 'amadeus' | 'mock' | 'loading'
 
 // ── Airline-specific fare class names ───────────────────────────────────────
 const FARE_NAMES: Record<string, { economy: string; business: string; first: string }> = {
-  AA: { economy: 'Main Cabin',     business: 'Flagship Business', first: 'Flagship First'  },
-  DL: { economy: 'Main Cabin',     business: 'Delta One',         first: 'First Class'     },
-  UA: { economy: 'Economy Plus',   business: 'Polaris Business',  first: 'United First'    },
-  WN: { economy: 'Wanna Get Away', business: 'Business Select',   first: 'Business Select' },
+  AA: { economy: 'Main',           business: 'Flagship Business', first: 'Flagship First'  },
+  DL: { economy: 'Delta Main',     business: 'Delta One',         first: 'First Class'     },
+  UA: { economy: 'Economy',        business: 'Polaris Business',  first: 'United First'    },
+  WN: { economy: 'Economy',        business: 'Business Select',   first: 'Business Select' },
   B6: { economy: 'Blue',           business: 'Mint',              first: 'Mint Suite'      },
-  AS: { economy: 'Main Cabin',     business: 'First Class',       first: 'First Class'     },
+  AS: { economy: 'Saver',          business: 'First Class',       first: 'First Class'     },
   F9: { economy: 'Economy',        business: 'Stretch',           first: 'Stretch'         },
 }
 function fareName(code: string, cabin: 'economy'|'business'|'first'): string {
