@@ -7,6 +7,7 @@ import {
   formatTime,
   formatDate,
   formatDuration,
+  formatPrice,
   getPriceForClass,
   type Flight,
   type Passenger,
@@ -68,7 +69,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
   const basePerPerson   = getPriceForClass(flight, cabinClass)
   const returnPerPerson = returnFlight ? getPriceForClass(returnFlight, cabinClass) : 0
   const baseFare        = (basePerPerson + returnPerPerson) * passengerCount
-  const taxes           = Math.round(baseFare * 0.14)
+  const taxes           = Math.round(baseFare * 0.14 * 100) / 100
   const totalPrice      = baseFare + taxes + seatAddonCost
 
   const stepIndex = STEPS.findIndex(s => s.key === step)
@@ -183,12 +184,12 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
                 {seatAddonCost > 0 && (
                   <div className="flex justify-between text-gray-600 text-xs">
                     <span>Seat selection</span>
-                    <span>+${seatAddonCost}</span>
+                    <span>+${formatPrice(seatAddonCost)}</span>
                   </div>
                 )}
                 <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900">
                   <span>Total</span>
-                  <span className="text-blue-600">${totalPrice}</span>
+                  <span className="text-blue-600">${formatPrice(totalPrice)}</span>
                 </div>
               </div>
 
@@ -568,7 +569,7 @@ function PaymentStep({ totalPrice, contactEmail, onComplete, onBack }: {
           {loading ? (
             <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />Processing…</>
           ) : (
-            <>Pay ${totalPrice} & Confirm Booking</>
+            <>Pay ${formatPrice(totalPrice)} & Confirm Booking</>
           )}
         </button>
       </div>

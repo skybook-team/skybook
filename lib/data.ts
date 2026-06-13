@@ -443,8 +443,8 @@ export function generateFlights(from: string, to: string, date: string): Flight[
         carryOnIncluded:baggage.carryOnIncluded,
         checkedBagPrice:baggage.checkedBagPrice,
         economy:  { price: economyPrice,                                  seatsLeft },
-        business: { price: Math.round(economyPrice * 2.8 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
-        first:    { price: Math.round(economyPrice * 5.5 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
+        business: { price: Math.round(economyPrice * 2.8 * 100) / 100,    seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
+        first:    { price: Math.round(economyPrice * 5.5 * 100) / 100,    seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
       } as Flight
     }).sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime())
   }
@@ -488,7 +488,7 @@ export function generateFlights(from: string, to: string, date: string): Flight[
 
     const base = getBasePrice(duration, airline.code)
     const priceVariance = 0.80 + r() * 0.55
-    const economyPrice = Math.round(base * priceVariance / 5) * 5
+    const economyPrice = Math.round(base * priceVariance * 100) / 100
     const seatsLeft = 1 + Math.floor(r() * 42)
 
     return {
@@ -505,11 +505,15 @@ export function generateFlights(from: string, to: string, date: string): Flight[
       aircraft,
       carryOnIncluded: baggage.carryOnIncluded,
       checkedBagPrice: baggage.checkedBagPrice,
-      economy:  { price: economyPrice,                                  seatsLeft },
-      business: { price: Math.round(economyPrice * 2.8 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
-      first:    { price: Math.round(economyPrice * 5.5 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
+      economy:  { price: economyPrice,                                      seatsLeft },
+      business: { price: Math.round(economyPrice * 2.8 * 100) / 100,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
+      first:    { price: Math.round(economyPrice * 5.5 * 100) / 100,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
     } as Flight
   }).sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime())
+}
+
+export function formatPrice(amount: number): string {
+  return amount.toFixed(2)
 }
 
 export function formatDuration(minutes: number): string {

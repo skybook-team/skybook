@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { getBookingById } from '@/lib/store'
-import { formatTime, formatDate, formatDuration, type CompletedBooking, type Flight } from '@/lib/data'
+import { formatTime, formatDate, formatDuration, formatPrice, type CompletedBooking, type Flight } from '@/lib/data'
 
 export default function Confirmation({ bookingId }: { bookingId: string }) {
   const [booking, setBooking] = useState<CompletedBooking | null>(null)
@@ -109,12 +109,12 @@ export default function Confirmation({ bookingId }: { bookingId: string }) {
         <div className="bg-white rounded-2xl border border-gray-200 p-5 mb-6">
           <h2 className="font-semibold text-gray-900 mb-3 text-sm uppercase tracking-wide">Price Breakdown</h2>
           <div className="space-y-2 text-sm">
-            <div className="flex justify-between text-gray-600"><span>Base fare</span><span>${baseFare}</span></div>
-            {addOnsCost > 0 && <div className="flex justify-between text-gray-600"><span>Add-ons</span><span>${addOnsCost}</span></div>}
-            <div className="flex justify-between text-gray-600"><span>Taxes & fees</span><span>${taxes}</span></div>
+            <div className="flex justify-between text-gray-600"><span>Base fare</span><span>${formatPrice(baseFare)}</span></div>
+            {addOnsCost > 0 && <div className="flex justify-between text-gray-600"><span>Add-ons</span><span>${formatPrice(addOnsCost)}</span></div>}
+            <div className="flex justify-between text-gray-600"><span>Taxes & fees</span><span>${formatPrice(taxes)}</span></div>
             <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900 text-base">
               <span>Total Paid</span>
-              <span className="text-green-600">${totalPrice}</span>
+              <span className="text-green-600">${formatPrice(totalPrice)}</span>
             </div>
           </div>
         </div>

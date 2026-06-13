@@ -646,6 +646,6 @@ export function applyDatePricing(baseFare: number, date: string): number {
   if (m === 5 && day >= 27) factor *= 1.20       // late June
   if (m === 6 && day <= 8)  factor *= 1.20       // early July
 
-  const price = Math.round(baseFare * factor / 5) * 5
+  const price = Math.round(baseFare * factor * 100) / 100
   return Math.max(39, price)
 }
