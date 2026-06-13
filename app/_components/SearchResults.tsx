@@ -31,22 +31,11 @@ function fareName(code: string, cabin: 'economy'|'business'|'first'): string {
 
 // ── Fare rules per airline + cabin ──────────────────────────────────────────
 interface FareRule { changes: string; refund: string }
-const AIRLINE_RULES: Partial<Record<string, Record<'economy'|'business'|'first', FareRule>>> = {
-  WN: {
-    economy:  { changes: 'Free changes',    refund: 'Flight credit'       },
-    business: { changes: 'Free changes',    refund: 'Fully refundable'    },
-    first:    { changes: 'Free changes',    refund: 'Fully refundable'    },
-  },
-  F9: {
-    economy:  { changes: 'No changes',      refund: 'Non-refundable'      },
-    business: { changes: '$75 change fee',  refund: 'Non-refundable'      },
-    first:    { changes: '$75 change fee',  refund: 'Non-refundable'      },
-  },
-}
+const AIRLINE_RULES: Partial<Record<string, Record<'economy'|'business'|'first', FareRule>>> = {}
 const DEFAULT_RULES: Record<'economy'|'business'|'first', FareRule> = {
-  economy:  { changes: '$200 change fee', refund: 'Non-refundable'      },
-  business: { changes: '$150 change fee', refund: 'Refundable for a fee' },
-  first:    { changes: 'No change fee',   refund: 'Fully refundable'    },
+  economy:  { changes: '$200 change fee', refund: 'Non-refundable' },
+  business: { changes: '$150 change fee', refund: 'Non-refundable' },
+  first:    { changes: '$75 change fee',  refund: 'Non-refundable' },
 }
 function fareRule(code: string, cabin: 'economy'|'business'|'first'): FareRule {
   return (AIRLINE_RULES[code] ?? DEFAULT_RULES)[cabin]
@@ -256,6 +245,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
               onSelect={ret => selectFlight(selectedOutbound!, ret)}
               label={`${to} → ${from} · Return · ${returnDate}`}
               cheapest={filteredRet.length ? Math.min(...filteredRet.map(f => getPriceForClass(f, cabinClass))) : 0}
+              outboundPrice={getPriceForClass(selectedOutbound!, cabinClass)}
             />
           </>
         ) : (
@@ -274,10 +264,10 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
 
 // ── Flight list ────────────────────────────────────────────────────────────
 
-function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSelect, label, cheapest, loading, source }: {
+function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSelect, label, cheapest, loading, source, outboundPrice }: {
   flights: Flight[]; cabinClass: 'economy'|'business'|'first'; passengers: number
   sort: SortKey; onSortChange: (s: SortKey) => void; onSelect: (f: Flight) => void
-  label: string; cheapest: number; loading: boolean; source: Source
+  label: string; cheapest: number; loading: boolean; source: Source; outboundPrice?: number
 }) {
   return (
     <div>
@@ -320,7 +310,8 @@ function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSel
         <div className="space-y-3">
           {flights.map((f, idx) => (
             <FlightCard key={f.id} flight={f} cabinClass={cabinClass} passengers={passengers}
-              onSelect={onSelect} isCheapest={idx === 0 && getPriceForClass(f, cabinClass) === cheapest} />
+              onSelect={onSelect} isCheapest={idx === 0 && getPriceForClass(f, cabinClass) === cheapest}
+              outboundPrice={outboundPrice} />
           ))}
         </div>
       )}
@@ -357,9 +348,9 @@ function SkeletonCard() {
 
 // ── Flight card ─────────────────────────────────────────────────────────────
 
-function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
+function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outboundPrice }: {
   flight: Flight; cabinClass: 'economy'|'business'|'first'; passengers: number
-  onSelect: (f: Flight) => void; isCheapest: boolean
+  onSelect: (f: Flight) => void; isCheapest: boolean; outboundPrice?: number
 }) {
   const price     = getPriceForClass(flight, cabinClass)
   const classData = flight[cabinClass]
@@ -470,14 +461,24 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
 
           {/* Price + CTA */}
           <div className="text-right shrink-0 ml-1">
-            <p className="text-2xl font-black text-gray-900 tabular-nums">${price}</p>
-            <p className="text-xs text-gray-400 mb-1.5">{passengers > 1 ? `$${price * passengers} total` : 'per person'}</p>
+            {outboundPrice ? (
+              <>
+                <p className="text-2xl font-black text-gray-900 tabular-nums">${(outboundPrice + price) * passengers}</p>
+                <p className="text-xs text-gray-400 mb-1.5">round trip total</p>
+                <p className="text-xs text-gray-500 mb-1.5">+${price * passengers} this leg</p>
+              </>
+            ) : (
+              <>
+                <p className="text-2xl font-black text-gray-900 tabular-nums">${price * passengers}</p>
+                <p className="text-xs text-gray-400 mb-1.5">{passengers > 1 ? 'total' : 'per person'}</p>
+              </>
+            )}
             {classData.seatsLeft <= 5 && (
               <p className="text-xs text-red-500 font-semibold mb-1">{classData.seatsLeft} left!</p>
             )}
             <button onClick={() => onSelect(flight)}
               className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors w-full shadow-sm">
-              Select
+              {outboundPrice ? 'Book trip' : 'Select'}
             </button>
           </div>
         </div>
