@@ -21,7 +21,7 @@ export default function PrivacyPage() {
           <p className="text-gray-600 leading-relaxed">
             SkyBook, Inc. (&ldquo;SkyBook,&rdquo; &ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;) is committed to protecting your personal information.
             This Privacy Policy explains how we collect, use, disclose, and safeguard your data when you use our website
-            at skybook-ruddy.vercel.app or any of our services (collectively, the &ldquo;Service&rdquo;).
+            at skybookfare.com or any of our services (collectively, the &ldquo;Service&rdquo;).
           </p>
 
           {[

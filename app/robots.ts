@@ -3,6 +3,6 @@ import type { MetadataRoute } from 'next'
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: { userAgent: '*', allow: '/' },
-    sitemap: 'https://skybook-ruddy.vercel.app/sitemap.xml',
+    sitemap: 'https://skybookfare.com/sitemap.xml',
   }
 }
