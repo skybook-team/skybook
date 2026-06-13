@@ -3,6 +3,8 @@ export interface Airport {
   city: string
   name: string
   country: string
+  lat: number
+  lon: number
 }
 
 export interface Airline {
@@ -89,43 +91,187 @@ export interface CompletedBooking {
 }
 
 export const AIRPORTS: Airport[] = [
-  { code: 'JFK', city: 'New York', name: 'John F. Kennedy International', country: 'US' },
-  { code: 'LAX', city: 'Los Angeles', name: 'Los Angeles International', country: 'US' },
-  { code: 'ORD', city: 'Chicago', name: "O'Hare International", country: 'US' },
-  { code: 'DFW', city: 'Dallas', name: 'Dallas/Fort Worth International', country: 'US' },
-  { code: 'ATL', city: 'Atlanta', name: 'Hartsfield-Jackson Atlanta', country: 'US' },
-  { code: 'SFO', city: 'San Francisco', name: 'San Francisco International', country: 'US' },
-  { code: 'SEA', city: 'Seattle', name: 'Seattle-Tacoma International', country: 'US' },
-  { code: 'MIA', city: 'Miami', name: 'Miami International', country: 'US' },
-  { code: 'BOS', city: 'Boston', name: 'Logan International', country: 'US' },
-  { code: 'DEN', city: 'Denver', name: 'Denver International', country: 'US' },
-  { code: 'LAS', city: 'Las Vegas', name: 'Harry Reid International', country: 'US' },
-  { code: 'PHX', city: 'Phoenix', name: 'Phoenix Sky Harbor International', country: 'US' },
-  { code: 'IAH', city: 'Houston', name: 'George Bush Intercontinental', country: 'US' },
-  { code: 'MCO', city: 'Orlando', name: 'Orlando International', country: 'US' },
-  { code: 'CLT', city: 'Charlotte', name: 'Charlotte Douglas International', country: 'US' },
-  { code: 'LHR', city: 'London', name: 'Heathrow Airport', country: 'GB' },
-  { code: 'CDG', city: 'Paris', name: 'Charles de Gaulle Airport', country: 'FR' },
-  { code: 'NRT', city: 'Tokyo', name: 'Narita International Airport', country: 'JP' },
-  { code: 'DXB', city: 'Dubai', name: 'Dubai International Airport', country: 'AE' },
-  { code: 'CUN', city: 'Cancun', name: 'Cancun International Airport', country: 'MX' },
-  { code: 'YYZ', city: 'Toronto', name: 'Toronto Pearson International', country: 'CA' },
-  { code: 'SYD', city: 'Sydney', name: 'Kingsford Smith Airport', country: 'AU' },
-  { code: 'MEX', city: 'Mexico City', name: 'Benito Juárez International', country: 'MX' },
+  // ── Major US Hubs ──
+  { code: 'ATL', city: 'Atlanta',            name: 'Hartsfield-Jackson Atlanta International', country: 'US', lat: 33.6407,  lon: -84.4277  },
+  { code: 'ORD', city: 'Chicago',            name: "O'Hare International",                     country: 'US', lat: 41.9742,  lon: -87.9073  },
+  { code: 'LAX', city: 'Los Angeles',        name: 'Los Angeles International',                country: 'US', lat: 33.9425,  lon: -118.4081 },
+  { code: 'DFW', city: 'Dallas/Fort Worth',  name: 'Dallas/Fort Worth International',          country: 'US', lat: 32.8998,  lon: -97.0403  },
+  { code: 'DEN', city: 'Denver',             name: 'Denver International',                     country: 'US', lat: 39.8561,  lon: -104.6737 },
+  { code: 'JFK', city: 'New York',           name: 'John F. Kennedy International',            country: 'US', lat: 40.6413,  lon: -73.7781  },
+  { code: 'SFO', city: 'San Francisco',      name: 'San Francisco International',              country: 'US', lat: 37.6213,  lon: -122.3790 },
+  { code: 'SEA', city: 'Seattle',            name: 'Seattle-Tacoma International',             country: 'US', lat: 47.4502,  lon: -122.3088 },
+  { code: 'LAS', city: 'Las Vegas',          name: 'Harry Reid International',                 country: 'US', lat: 36.0840,  lon: -115.1537 },
+  { code: 'MCO', city: 'Orlando',            name: 'Orlando International',                    country: 'US', lat: 28.4312,  lon: -81.3081  },
+  { code: 'MIA', city: 'Miami',              name: 'Miami International',                      country: 'US', lat: 25.7959,  lon: -80.2870  },
+  { code: 'CLT', city: 'Charlotte',          name: 'Charlotte Douglas International',          country: 'US', lat: 35.2140,  lon: -80.9431  },
+  { code: 'PHX', city: 'Phoenix',            name: 'Phoenix Sky Harbor International',         country: 'US', lat: 33.4373,  lon: -112.0078 },
+  { code: 'IAH', city: 'Houston',            name: 'George Bush Intercontinental',             country: 'US', lat: 29.9902,  lon: -95.3368  },
+  { code: 'BOS', city: 'Boston',             name: 'Logan International',                      country: 'US', lat: 42.3656,  lon: -71.0096  },
+  { code: 'MSP', city: 'Minneapolis',        name: 'Minneapolis–Saint Paul International',     country: 'US', lat: 44.8820,  lon: -93.2218  },
+  { code: 'DTW', city: 'Detroit',            name: 'Detroit Metropolitan Wayne County',        country: 'US', lat: 42.2124,  lon: -83.3534  },
+  { code: 'PHL', city: 'Philadelphia',       name: 'Philadelphia International',               country: 'US', lat: 39.8721,  lon: -75.2408  },
+  { code: 'EWR', city: 'Newark',             name: 'Newark Liberty International',             country: 'US', lat: 40.6895,  lon: -74.1745  },
+  { code: 'LGA', city: 'New York (Queens)',  name: 'LaGuardia Airport',                        country: 'US', lat: 40.7769,  lon: -73.8740  },
+
+  // ── Major Secondary ──
+  { code: 'SLC', city: 'Salt Lake City',     name: 'Salt Lake City International',             country: 'US', lat: 40.7884,  lon: -111.9778 },
+  { code: 'BWI', city: 'Baltimore',          name: 'Baltimore/Washington International',       country: 'US', lat: 39.1774,  lon: -76.6682  },
+  { code: 'SAN', city: 'San Diego',          name: 'San Diego International',                  country: 'US', lat: 32.7338,  lon: -117.1933 },
+  { code: 'TPA', city: 'Tampa',              name: 'Tampa International',                      country: 'US', lat: 27.9755,  lon: -82.5332  },
+  { code: 'PDX', city: 'Portland',           name: 'Portland International',                   country: 'US', lat: 45.5898,  lon: -122.5951 },
+  { code: 'MDW', city: 'Chicago (Midway)',   name: 'Chicago Midway International',             country: 'US', lat: 41.7868,  lon: -87.7522  },
+  { code: 'STL', city: 'St. Louis',          name: 'St. Louis Lambert International',          country: 'US', lat: 38.7487,  lon: -90.3700  },
+  { code: 'HNL', city: 'Honolulu',           name: 'Daniel K. Inouye International',           country: 'US', lat: 21.3187,  lon: -157.9224 },
+  { code: 'AUS', city: 'Austin',             name: 'Austin-Bergstrom International',           country: 'US', lat: 30.1975,  lon: -97.6664  },
+  { code: 'RDU', city: 'Raleigh-Durham',     name: 'Raleigh-Durham International',             country: 'US', lat: 35.8801,  lon: -78.7880  },
+  { code: 'MCI', city: 'Kansas City',        name: 'Kansas City International',                country: 'US', lat: 39.2976,  lon: -94.7139  },
+  { code: 'MSY', city: 'New Orleans',        name: 'Louis Armstrong New Orleans International',country: 'US', lat: 29.9934,  lon: -90.2580  },
+  { code: 'SMF', city: 'Sacramento',         name: 'Sacramento International',                 country: 'US', lat: 38.6954,  lon: -121.5908 },
+  { code: 'OAK', city: 'Oakland',            name: 'Oakland International',                    country: 'US', lat: 37.7213,  lon: -122.2208 },
+  { code: 'SJC', city: 'San Jose',           name: 'Norman Y. Mineta San José International',  country: 'US', lat: 37.3626,  lon: -121.9290 },
+
+  // ── DC Area ──
+  { code: 'DCA', city: 'Washington DC',      name: 'Ronald Reagan Washington National',        country: 'US', lat: 38.8521,  lon: -77.0377  },
+  { code: 'IAD', city: 'Washington Dulles',  name: 'Washington Dulles International',          country: 'US', lat: 38.9445,  lon: -77.4558  },
+
+  // ── Texas ──
+  { code: 'DAL', city: 'Dallas (Love)',      name: 'Dallas Love Field',                        country: 'US', lat: 32.8471,  lon: -96.8518  },
+  { code: 'HOU', city: 'Houston (Hobby)',    name: 'William P. Hobby Airport',                 country: 'US', lat: 29.6454,  lon: -95.2789  },
+  { code: 'SAT', city: 'San Antonio',        name: 'San Antonio International',                country: 'US', lat: 29.5337,  lon: -98.4698  },
+  { code: 'AMA', city: 'Amarillo',           name: 'Rick Husband Amarillo International',      country: 'US', lat: 35.2194,  lon: -101.7059 },
+  { code: 'LBB', city: 'Lubbock',           name: 'Lubbock Preston Smith International',      country: 'US', lat: 33.6636,  lon: -101.8228 },
+  { code: 'MAF', city: 'Midland-Odessa',     name: 'Midland International Air & Space Port',   country: 'US', lat: 31.9425,  lon: -102.2019 },
+  { code: 'CRP', city: 'Corpus Christi',     name: 'Corpus Christi International',             country: 'US', lat: 27.7704,  lon: -97.5012  },
+  { code: 'ELP', city: 'El Paso',            name: 'El Paso International',                    country: 'US', lat: 31.8072,  lon: -106.3777 },
+  { code: 'SHV', city: 'Shreveport',         name: 'Shreveport Regional Airport',              country: 'US', lat: 32.4466,  lon: -93.8257  },
+  { code: 'MFE', city: 'McAllen',            name: 'McAllen Miller International',             country: 'US', lat: 26.1758,  lon: -98.2386  },
+
+  // ── Southeast ──
+  { code: 'BNA', city: 'Nashville',          name: 'Nashville International',                  country: 'US', lat: 36.1245,  lon: -86.6782  },
+  { code: 'MEM', city: 'Memphis',            name: 'Memphis International',                    country: 'US', lat: 35.0424,  lon: -89.9767  },
+  { code: 'JAX', city: 'Jacksonville',       name: 'Jacksonville International',               country: 'US', lat: 30.4941,  lon: -81.6879  },
+  { code: 'RSW', city: 'Fort Myers',         name: 'Southwest Florida International',          country: 'US', lat: 26.5362,  lon: -81.7552  },
+  { code: 'PBI', city: 'West Palm Beach',    name: 'Palm Beach International',                 country: 'US', lat: 26.6832,  lon: -80.0956  },
+  { code: 'FLL', city: 'Fort Lauderdale',    name: 'Fort Lauderdale-Hollywood International',  country: 'US', lat: 26.0726,  lon: -80.1527  },
+  { code: 'SRQ', city: 'Sarasota',           name: 'Sarasota-Bradenton International',         country: 'US', lat: 27.3954,  lon: -82.5544  },
+  { code: 'TLH', city: 'Tallahassee',        name: 'Tallahassee International',                country: 'US', lat: 30.3965,  lon: -84.3503  },
+  { code: 'PNS', city: 'Pensacola',          name: 'Pensacola International',                  country: 'US', lat: 30.4734,  lon: -87.1866  },
+  { code: 'VPS', city: 'Destin/Fort Walton', name: 'Destin-Fort Walton Beach Airport',         country: 'US', lat: 30.4833,  lon: -86.5254  },
+  { code: 'ECP', city: 'Panama City Beach',  name: 'Northwest Florida Beaches International',  country: 'US', lat: 30.3571,  lon: -85.7956  },
+  { code: 'SAV', city: 'Savannah',           name: 'Savannah/Hilton Head International',       country: 'US', lat: 32.1276,  lon: -81.2021  },
+  { code: 'CHS', city: 'Charleston',         name: 'Charleston International',                 country: 'US', lat: 32.8987,  lon: -80.0405  },
+  { code: 'BHM', city: 'Birmingham',         name: 'Birmingham-Shuttlesworth International',   country: 'US', lat: 33.5629,  lon: -86.7535  },
+  { code: 'HSV', city: 'Huntsville',         name: 'Huntsville International',                 country: 'US', lat: 34.6372,  lon: -86.7751  },
+  { code: 'TYS', city: 'Knoxville',          name: 'McGhee Tyson Airport',                     country: 'US', lat: 35.8110,  lon: -83.9940  },
+  { code: 'CHA', city: 'Chattanooga',        name: 'Chattanooga Metropolitan Airport',         country: 'US', lat: 35.0353,  lon: -85.2038  },
+
+  // ── Carolinas / Virginia ──
+  { code: 'ILM', city: 'Wilmington',         name: 'Wilmington International',                 country: 'US', lat: 34.2706,  lon: -77.9026  },
+  { code: 'MYR', city: 'Myrtle Beach',       name: 'Myrtle Beach International',               country: 'US', lat: 33.6797,  lon: -78.9283  },
+  { code: 'AVL', city: 'Asheville',          name: 'Asheville Regional Airport',               country: 'US', lat: 35.4362,  lon: -82.5419  },
+  { code: 'GSP', city: 'Greenville-Spartanburg', name: 'Greenville-Spartanburg International', country: 'US', lat: 34.8957,  lon: -82.2189  },
+  { code: 'GSO', city: 'Greensboro',         name: 'Piedmont Triad International',             country: 'US', lat: 36.0978,  lon: -79.9373  },
+  { code: 'RIC', city: 'Richmond',           name: 'Richmond International',                   country: 'US', lat: 37.5052,  lon: -77.3197  },
+  { code: 'ORF', city: 'Norfolk',            name: 'Norfolk International',                    country: 'US', lat: 36.8976,  lon: -76.0183  },
+
+  // ── Northeast ──
+  { code: 'BDL', city: 'Hartford',           name: 'Bradley International',                    country: 'US', lat: 41.9389,  lon: -72.6832  },
+  { code: 'PVD', city: 'Providence',         name: 'Theodore Francis Green Airport',           country: 'US', lat: 41.7328,  lon: -71.4284  },
+  { code: 'MHT', city: 'Manchester NH',      name: 'Manchester-Boston Regional',               country: 'US', lat: 42.9326,  lon: -71.4357  },
+  { code: 'BUF', city: 'Buffalo',            name: 'Buffalo Niagara International',            country: 'US', lat: 42.9405,  lon: -78.7322  },
+  { code: 'ROC', city: 'Rochester',          name: 'Greater Rochester International',          country: 'US', lat: 43.1189,  lon: -77.6724  },
+  { code: 'ALB', city: 'Albany',             name: 'Albany International',                     country: 'US', lat: 42.7483,  lon: -73.8017  },
+  { code: 'SYR', city: 'Syracuse',           name: 'Syracuse Hancock International',           country: 'US', lat: 43.1112,  lon: -76.1063  },
+  { code: 'BTV', city: 'Burlington VT',      name: 'Burlington International',                 country: 'US', lat: 44.4719,  lon: -73.1533  },
+  { code: 'PWM', city: 'Portland ME',        name: 'Portland International Jetport',           country: 'US', lat: 43.6462,  lon: -70.3093  },
+  { code: 'BGR', city: 'Bangor',             name: 'Bangor International',                     country: 'US', lat: 44.8074,  lon: -68.8281  },
+
+  // ── Midwest ──
+  { code: 'PIT', city: 'Pittsburgh',         name: 'Pittsburgh International',                 country: 'US', lat: 40.4914,  lon: -80.2329  },
+  { code: 'CLE', city: 'Cleveland',          name: 'Cleveland Hopkins International',          country: 'US', lat: 41.4117,  lon: -81.8498  },
+  { code: 'CMH', city: 'Columbus',           name: 'John Glenn Columbus International',        country: 'US', lat: 39.9980,  lon: -82.8919  },
+  { code: 'IND', city: 'Indianapolis',       name: 'Indianapolis International',               country: 'US', lat: 39.7173,  lon: -86.2944  },
+  { code: 'MKE', city: 'Milwaukee',          name: 'General Mitchell International',           country: 'US', lat: 42.9472,  lon: -87.8966  },
+  { code: 'OMA', city: 'Omaha',              name: 'Eppley Airfield',                          country: 'US', lat: 41.3032,  lon: -95.8940  },
+  { code: 'DSM', city: 'Des Moines',         name: 'Des Moines International',                 country: 'US', lat: 41.5330,  lon: -93.6631  },
+  { code: 'CID', city: 'Cedar Rapids',       name: 'The Eastern Iowa Airport',                 country: 'US', lat: 41.8847,  lon: -91.7108  },
+  { code: 'MSN', city: 'Madison',            name: 'Dane County Regional',                     country: 'US', lat: 43.1399,  lon: -89.3375  },
+  { code: 'GRR', city: 'Grand Rapids',       name: 'Gerald R. Ford International',             country: 'US', lat: 42.8808,  lon: -85.5228  },
+  { code: 'SBN', city: 'South Bend',         name: 'South Bend International',                 country: 'US', lat: 41.7087,  lon: -86.3173  },
+  { code: 'TUL', city: 'Tulsa',              name: 'Tulsa International',                      country: 'US', lat: 36.1984,  lon: -95.8881  },
+  { code: 'OKC', city: 'Oklahoma City',      name: 'Will Rogers World Airport',                country: 'US', lat: 35.3931,  lon: -97.6007  },
+  { code: 'ICT', city: 'Wichita',            name: 'Wichita Eisenhower National',              country: 'US', lat: 37.6499,  lon: -97.4331  },
+
+  // ── Southwest ──
+  { code: 'ABQ', city: 'Albuquerque',        name: 'Albuquerque International Sunport',        country: 'US', lat: 35.0402,  lon: -106.6096 },
+  { code: 'TUS', city: 'Tucson',             name: 'Tucson International',                     country: 'US', lat: 32.1161,  lon: -110.9410 },
+  { code: 'FAT', city: 'Fresno',             name: 'Fresno Yosemite International',            country: 'US', lat: 36.7762,  lon: -119.7180 },
+  { code: 'BUR', city: 'Burbank',            name: 'Hollywood Burbank Airport',                country: 'US', lat: 34.2007,  lon: -118.3585 },
+  { code: 'LGB', city: 'Long Beach',         name: 'Long Beach Airport',                       country: 'US', lat: 33.8177,  lon: -118.1516 },
+  { code: 'ONT', city: 'Ontario CA',         name: 'LA/Ontario International',                 country: 'US', lat: 34.0560,  lon: -117.6012 },
+  { code: 'SNA', city: 'Orange County',      name: 'John Wayne Airport',                       country: 'US', lat: 33.6757,  lon: -117.8682 },
+  { code: 'PSP', city: 'Palm Springs',       name: 'Palm Springs International',               country: 'US', lat: 33.8297,  lon: -116.5067 },
+
+  // ── Pacific Northwest / Mountain West ──
+  { code: 'GEG', city: 'Spokane',            name: 'Spokane International',                    country: 'US', lat: 47.6199,  lon: -117.5339 },
+  { code: 'BOI', city: 'Boise',              name: 'Boise Airport',                            country: 'US', lat: 43.5644,  lon: -116.2228 },
+  { code: 'BZN', city: 'Bozeman',            name: 'Bozeman Yellowstone International',        country: 'US', lat: 45.7770,  lon: -111.1530 },
+  { code: 'MSO', city: 'Missoula',           name: 'Missoula Montana Airport',                 country: 'US', lat: 46.9163,  lon: -114.0906 },
+  { code: 'BIL', city: 'Billings',           name: 'Billings Logan International',             country: 'US', lat: 45.8077,  lon: -108.5428 },
+
+  // ── Colorado / Mountain Resorts ──
+  { code: 'COS', city: 'Colorado Springs',   name: 'Colorado Springs Airport',                 country: 'US', lat: 38.8058,  lon: -104.7008 },
+  { code: 'GJT', city: 'Grand Junction',     name: 'Grand Junction Regional',                  country: 'US', lat: 39.1224,  lon: -108.5267 },
+  { code: 'ASE', city: 'Aspen',              name: 'Aspen/Pitkin County Airport',              country: 'US', lat: 39.2232,  lon: -106.8688 },
+  { code: 'EGE', city: 'Eagle/Vail',         name: 'Eagle County Regional',                    country: 'US', lat: 39.6426,  lon: -106.9177 },
+  { code: 'JAC', city: 'Jackson Hole',       name: 'Jackson Hole Airport',                     country: 'US', lat: 43.6073,  lon: -110.7377 },
+  { code: 'MTJ', city: 'Montrose CO',        name: 'Montrose Regional Airport',                country: 'US', lat: 38.5098,  lon: -107.8937 },
+  { code: 'DRO', city: 'Durango',            name: 'Durango-La Plata County Airport',          country: 'US', lat: 37.1515,  lon: -107.7539 },
+
+  // ── Hawaii ──
+  { code: 'OGG', city: 'Maui',               name: 'Kahului Airport',                          country: 'US', lat: 20.8986,  lon: -156.4305 },
+  { code: 'KOA', city: 'Kona (Big Island)',  name: 'Ellison Onizuka Kona International',       country: 'US', lat: 19.7388,  lon: -156.0456 },
+  { code: 'LIH', city: 'Kauai',              name: 'Lihue Airport',                            country: 'US', lat: 21.9760,  lon: -159.3388 },
+  { code: 'ITO', city: 'Hilo',               name: 'Hilo International',                       country: 'US', lat: 19.7213,  lon: -155.0485 },
+
+  // ── Alaska ──
+  { code: 'ANC', city: 'Anchorage',          name: 'Ted Stevens Anchorage International',      country: 'US', lat: 61.1743,  lon: -149.9960 },
+  { code: 'FAI', city: 'Fairbanks',          name: 'Fairbanks International',                  country: 'US', lat: 64.8150,  lon: -147.8561 },
+  { code: 'JNU', city: 'Juneau',             name: 'Juneau International',                     country: 'US', lat: 58.3550,  lon: -134.5763 },
+  { code: 'KTN', city: 'Ketchikan',          name: 'Ketchikan International',                  country: 'US', lat: 55.3557,  lon: -131.7137 },
+
+  // ── International ──
+  { code: 'LHR', city: 'London',             name: 'Heathrow Airport',                         country: 'GB', lat: 51.4700,  lon: -0.4543   },
+  { code: 'CDG', city: 'Paris',              name: 'Charles de Gaulle Airport',                country: 'FR', lat: 49.0097,  lon:  2.5479   },
+  { code: 'NRT', city: 'Tokyo',              name: 'Narita International Airport',             country: 'JP', lat: 35.7720,  lon: 140.3929  },
+  { code: 'DXB', city: 'Dubai',              name: 'Dubai International Airport',              country: 'AE', lat: 25.2532,  lon:  55.3657  },
+  { code: 'CUN', city: 'Cancun',             name: 'Cancun International Airport',             country: 'MX', lat: 21.0365,  lon: -86.8771  },
+  { code: 'YYZ', city: 'Toronto',            name: 'Toronto Pearson International',            country: 'CA', lat: 43.6777,  lon: -79.6248  },
+  { code: 'YVR', city: 'Vancouver',          name: 'Vancouver International',                  country: 'CA', lat: 49.1947,  lon: -123.1839 },
+  { code: 'YUL', city: 'Montreal',           name: 'Montréal-Trudeau International',           country: 'CA', lat: 45.4706,  lon: -73.7408  },
+  { code: 'SYD', city: 'Sydney',             name: 'Kingsford Smith Airport',                  country: 'AU', lat: -33.9399, lon: 151.1753  },
+  { code: 'MEX', city: 'Mexico City',        name: 'Benito Juárez International',              country: 'MX', lat: 19.4361,  lon: -99.0719  },
+  { code: 'GDL', city: 'Guadalajara',        name: 'Miguel Hidalgo y Costilla International',  country: 'MX', lat: 20.5218,  lon: -103.3109 },
+  { code: 'PVR', city: 'Puerto Vallarta',    name: 'Licenciado Gustavo Díaz Ordaz Intl',       country: 'MX', lat: 20.6801,  lon: -105.2541 },
+  { code: 'SJD', city: 'Los Cabos',          name: 'Los Cabos International',                  country: 'MX', lat: 23.1518,  lon: -109.7216 },
+  { code: 'NAS', city: 'Nassau',             name: 'Lynden Pindling International',            country: 'BS', lat: 25.0390,  lon: -77.4661  },
+  { code: 'MBJ', city: 'Montego Bay',        name: 'Sangster International',                   country: 'JM', lat: 18.5037,  lon: -77.9134  },
+  { code: 'SJU', city: 'San Juan',           name: 'Luis Muñoz Marín International',           country: 'PR', lat: 18.4394,  lon: -66.0018  },
+  { code: 'AUA', city: 'Aruba',              name: 'Queen Beatrix International',              country: 'AW', lat: 12.5014,  lon: -70.0152  },
+  { code: 'GCM', city: 'Grand Cayman',       name: 'Owen Roberts International',               country: 'KY', lat: 19.2928,  lon: -81.3576  },
 ]
 
 export const AIRLINES: Airline[] = [
-  { code: 'AA', name: 'American Airlines', color: '#C8102E', logoUrl: 'https://logo.clearbit.com/aa.com' },
-  { code: 'DL', name: 'Delta Air Lines',   color: '#003DA5', logoUrl: 'https://logo.clearbit.com/delta.com' },
-  { code: 'UA', name: 'United Airlines',   color: '#005DAA', logoUrl: 'https://logo.clearbit.com/united.com' },
-  { code: 'WN', name: 'Southwest Airlines',color: '#304CB2', logoUrl: 'https://logo.clearbit.com/southwest.com' },
-  { code: 'B6', name: 'JetBlue Airways',   color: '#0033A0', logoUrl: 'https://logo.clearbit.com/jetblue.com' },
-  { code: 'AS', name: 'Alaska Airlines',   color: '#0074C8', logoUrl: 'https://logo.clearbit.com/alaskaair.com' },
-  { code: 'NK', name: 'Spirit Airlines',   color: '#7c6f00', logoUrl: 'https://logo.clearbit.com/spirit.com' },
-  { code: 'F9', name: 'Frontier Airlines', color: '#007A3E', logoUrl: 'https://logo.clearbit.com/flyfrontier.com' },
+  { code: 'AA', name: 'American Airlines',  color: '#C8102E', logoUrl: 'https://logo.clearbit.com/aa.com'          },
+  { code: 'DL', name: 'Delta Air Lines',    color: '#003DA5', logoUrl: 'https://logo.clearbit.com/delta.com'       },
+  { code: 'UA', name: 'United Airlines',    color: '#005DAA', logoUrl: 'https://logo.clearbit.com/united.com'      },
+  { code: 'WN', name: 'Southwest Airlines', color: '#304CB2', logoUrl: 'https://logo.clearbit.com/southwest.com'   },
+  { code: 'B6', name: 'JetBlue Airways',    color: '#0033A0', logoUrl: 'https://logo.clearbit.com/jetblue.com'     },
+  { code: 'AS', name: 'Alaska Airlines',    color: '#0074C8', logoUrl: 'https://logo.clearbit.com/alaskaair.com'   },
+  { code: 'NK', name: 'Spirit Airlines',    color: '#7c6f00', logoUrl: 'https://logo.clearbit.com/spirit.com'      },
+  { code: 'F9', name: 'Frontier Airlines',  color: '#007A3E', logoUrl: 'https://logo.clearbit.com/flyfrontier.com' },
 ]
 
-// Real aircraft types by airline
 const AIRCRAFT: Record<string, string[]> = {
   AA: ['Boeing 737-800', 'Airbus A321', 'Boeing 777-200ER', 'Airbus A319', 'Boeing 787-9 Dreamliner', 'Airbus A321XLR'],
   DL: ['Airbus A220-300', 'Boeing 737-900ER', 'Airbus A321neo', 'Boeing 767-300ER', 'Airbus A330-900neo', 'Boeing 757-200'],
@@ -137,68 +283,54 @@ const AIRCRAFT: Record<string, string[]> = {
   F9: ['Airbus A320neo', 'Airbus A321neo', 'Airbus A319neo'],
 }
 
-// Real baggage policies
 const BAGGAGE: Record<string, { carryOnIncluded: boolean; checkedBagPrice: number | null }> = {
   AA: { carryOnIncluded: true,  checkedBagPrice: 30 },
   DL: { carryOnIncluded: true,  checkedBagPrice: 30 },
   UA: { carryOnIncluded: true,  checkedBagPrice: 35 },
-  WN: { carryOnIncluded: true,  checkedBagPrice: null },  // 2 bags always free
+  WN: { carryOnIncluded: true,  checkedBagPrice: null },
   B6: { carryOnIncluded: true,  checkedBagPrice: 35 },
   AS: { carryOnIncluded: true,  checkedBagPrice: 30 },
-  NK: { carryOnIncluded: false, checkedBagPrice: 45 },    // carry-on costs extra
-  F9: { carryOnIncluded: false, checkedBagPrice: 49 },    // carry-on costs extra
+  NK: { carryOnIncluded: false, checkedBagPrice: 45 },
+  F9: { carryOnIncluded: false, checkedBagPrice: 49 },
 }
 
-// Budget airline multipliers (Spirit/Frontier are cheaper base but add fees)
 const AIRLINE_PRICE_FACTOR: Record<string, number> = {
   AA: 1.0, DL: 1.05, UA: 0.98, WN: 0.88, B6: 0.85, AS: 0.90, NK: 0.60, F9: 0.62,
 }
 
-const ROUTE_DURATIONS: Record<string, number> = {
-  'JFK-LAX': 335, 'LAX-JFK': 315, 'JFK-ORD': 145, 'ORD-JFK': 150,
-  'JFK-MIA': 175, 'MIA-JFK': 185, 'JFK-SFO': 345, 'SFO-JFK': 320,
-  'JFK-ATL': 155, 'ATL-JFK': 160, 'JFK-BOS': 65,  'BOS-JFK': 65,
-  'JFK-DFW': 215, 'DFW-JFK': 220, 'JFK-LAS': 325, 'LAS-JFK': 305,
-  'JFK-DEN': 265, 'DEN-JFK': 255, 'JFK-SEA': 350, 'SEA-JFK': 330,
-  'JFK-IAH': 225, 'IAH-JFK': 230, 'JFK-MCO': 185, 'MCO-JFK': 190,
-  'LAX-ORD': 240, 'ORD-LAX': 255, 'LAX-SFO': 75,  'SFO-LAX': 80,
-  'LAX-SEA': 155, 'SEA-LAX': 160, 'LAX-LAS': 65,  'LAS-LAX': 65,
-  'LAX-DEN': 165, 'DEN-LAX': 170, 'LAX-ATL': 265, 'ATL-LAX': 275,
-  'LAX-MIA': 310, 'MIA-LAX': 325, 'LAX-PHX': 75,  'PHX-LAX': 80,
-  'ATL-ORD': 130, 'ORD-ATL': 125, 'ATL-MIA': 120, 'MIA-ATL': 125,
-  'ORD-DFW': 165, 'DFW-ORD': 170, 'ORD-DEN': 160, 'DEN-ORD': 155,
-  'JFK-LHR': 430, 'LHR-JFK': 465, 'JFK-CDG': 460, 'CDG-JFK': 500,
-  'LAX-LHR': 625, 'LHR-LAX': 665, 'LAX-NRT': 660, 'NRT-LAX': 590,
-  'LAX-DXB': 920, 'DXB-LAX': 960, 'JFK-DXB': 790, 'DXB-JFK': 820,
-  'JFK-NRT': 825, 'NRT-JFK': 760, 'MIA-CUN': 110, 'CUN-MIA': 120,
-  'JFK-CUN': 210, 'CUN-JFK': 220, 'LAX-CUN': 285, 'CUN-LAX': 295,
-  'JFK-YYZ': 100, 'YYZ-JFK': 105, 'ORD-YYZ': 85,  'YYZ-ORD': 85,
-  'LAX-SYD': 955, 'SYD-LAX': 870,
+// Major hub airports used as connection points for 1-stop itineraries
+const MAJOR_HUBS = ['ATL', 'ORD', 'DFW', 'DEN', 'LAX', 'SFO', 'JFK', 'SEA', 'IAH', 'CLT', 'PHX', 'MSP', 'SLC', 'DTW', 'BOS', 'EWR']
+
+// Compute great-circle distance in miles between two lat/lon points
+function haversineDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
+  const R = 3958.8
+  const dLat = (lat2 - lat1) * Math.PI / 180
+  const dLon = (lon2 - lon1) * Math.PI / 180
+  const a =
+    Math.sin(dLat / 2) ** 2 +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * Math.sin(dLon / 2) ** 2
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))
 }
 
-const STOP_CITIES: Record<string, string[]> = {
-  'JFK-LAX': ['ORD', 'DFW', 'ATL'], 'LAX-JFK': ['ORD', 'DFW', 'ATL'],
-  'JFK-SFO': ['ORD', 'DEN', 'DFW'], 'SFO-JFK': ['ORD', 'DEN', 'ATL'],
-  'JFK-SEA': ['ORD', 'DEN'],        'SEA-JFK': ['ORD', 'DEN'],
-  'LAX-BOS': ['ORD', 'ATL'],        'BOS-LAX': ['ORD', 'ATL'],
-  'LAX-MIA': ['DFW', 'ATL'],        'MIA-LAX': ['DFW', 'ATL'],
-  'LAX-LHR': ['JFK', 'BOS'],        'LHR-LAX': ['JFK', 'BOS'],
-  'JFK-NRT': ['LAX', 'SEA'],        'NRT-JFK': ['LAX', 'SEA'],
-  'JFK-DXB': ['LHR', 'CDG'],        'DXB-JFK': ['LHR', 'CDG'],
+function getBaseDuration(from: string, to: string): number {
+  const fromAp = AIRPORTS.find(a => a.code === from)
+  const toAp   = AIRPORTS.find(a => a.code === to)
+  if (!fromAp || !toAp) return 240
+  const miles = haversineDistance(fromAp.lat, fromAp.lon, toAp.lat, toAp.lon)
+  // ~530 mph cruise + ~45 min overhead (taxi, climb, descent)
+  return Math.round(miles / 530 * 60 + 45)
 }
 
-// Realistic base prices by distance tier (minutes)
 function getBasePrice(durationMinutes: number, airlineCode: string): number {
   let base: number
-  if (durationMinutes < 90)       base = 69   // ultra-short
-  else if (durationMinutes < 150) base = 99   // short
-  else if (durationMinutes < 240) base = 149  // medium-short
-  else if (durationMinutes < 360) base = 219  // medium
-  else if (durationMinutes < 480) base = 299  // long domestic
-  else if (durationMinutes < 600) base = 449  // short international
-  else if (durationMinutes < 720) base = 599  // medium international
-  else                            base = 799  // long haul
-
+  if      (durationMinutes < 90)  base = 69
+  else if (durationMinutes < 150) base = 99
+  else if (durationMinutes < 240) base = 149
+  else if (durationMinutes < 360) base = 219
+  else if (durationMinutes < 480) base = 299
+  else if (durationMinutes < 600) base = 449
+  else if (durationMinutes < 720) base = 599
+  else                            base = 799
   return Math.round(base * (AIRLINE_PRICE_FACTOR[airlineCode] ?? 1.0))
 }
 
@@ -208,23 +340,15 @@ function seededRand(seed: string): () => number {
   return () => { h = ((h * 1664525) + 1013904223) & 0x7fffffff; return h / 0x7fffffff }
 }
 
-function getBaseDuration(from: string, to: string): number {
-  const key = `${from}-${to}`
-  if (ROUTE_DURATIONS[key]) return ROUTE_DURATIONS[key]
-  const intl = ['LHR', 'CDG', 'NRT', 'DXB', 'SYD', 'CUN', 'YYZ', 'MEX']
-  if (intl.includes(from) || intl.includes(to)) return 600
-  return 240
-}
-
 export function generateFlights(from: string, to: string, date: string): Flight[] {
   const fromAirport = AIRPORTS.find(a => a.code === from)
-  const toAirport = AIRPORTS.find(a => a.code === to)
+  const toAirport   = AIRPORTS.find(a => a.code === to)
   if (!fromAirport || !toAirport || from === to) return []
 
   const baseDuration = getBaseDuration(from, to)
   const countRand = seededRand(`${from}-${to}-${date}-count`)
   const count = 7 + Math.floor(countRand() * 4)
-  const stopOptions = STOP_CITIES[`${from}-${to}`] || ['ORD', 'ATL', 'DFW', 'DEN']
+  const stopOptions = MAJOR_HUBS.filter(h => h !== from && h !== to)
 
   return Array.from({ length: count }, (_, i) => {
     const r = seededRand(`${from}-${to}-${date}-${i}`)
@@ -233,18 +357,16 @@ export function generateFlights(from: string, to: string, date: string): Flight[
     const aircraft = aircraftList[Math.floor(r() * aircraftList.length)]
     const baggage = BAGGAGE[airline.code] || { carryOnIncluded: true, checkedBagPrice: 35 }
 
-    // Realistic flight number ranges per airline
     const flightNumRanges: Record<string, [number, number]> = {
       AA: [1, 3999], DL: [1, 4999], UA: [1, 5999], WN: [1, 9999],
-      B6: [1, 2999], AS: [1, 999], NK: [1, 999], F9: [1, 999],
+      B6: [1, 2999], AS: [1, 999],  NK: [1, 999],  F9: [1, 999],
     }
     const [min, max] = flightNumRanges[airline.code] || [100, 9999]
     const flightNum = `${airline.code} ${min + Math.floor(r() * (max - min))}`
 
-    // Departure: realistic times (avoid 1am-4am)
     const timeSlots = [5,6,6,7,7,8,8,9,10,11,12,13,14,15,16,17,17,18,19,20,21,22]
     const depHour = timeSlots[Math.floor(r() * timeSlots.length)]
-    const depMin = Math.floor(r() * 4) * 15
+    const depMin  = Math.floor(r() * 4) * 15
 
     const dep = new Date(`${date}T00:00:00`)
     dep.setHours(depHour, depMin, 0, 0)
@@ -253,16 +375,14 @@ export function generateFlights(from: string, to: string, date: string): Flight[
     const duration = Math.round(baseDuration * durationVariance)
     const arr = new Date(dep.getTime() + duration * 60000)
 
-    // Nonstop more common for short routes
     const nonStopChance = baseDuration < 200 ? 0.75 : 0.45
     const stopsRoll = r()
     const stops = stopsRoll < nonStopChance ? 0 : stopsRoll < 0.85 ? 1 : 2
-    const stopIdx = Math.floor(r() * stopOptions.length)
+    const stopCity = stopOptions[Math.floor(r() * stopOptions.length)]
 
-    // Realistic price with variance
     const base = getBasePrice(duration, airline.code)
-    const priceVariance = 0.80 + r() * 0.55  // ±27% variance
-    const economyPrice = Math.round(base * priceVariance / 5) * 5  // round to nearest $5
+    const priceVariance = 0.80 + r() * 0.55
+    const economyPrice = Math.round(base * priceVariance / 5) * 5
     const seatsLeft = 1 + Math.floor(r() * 42)
 
     return {
@@ -275,13 +395,13 @@ export function generateFlights(from: string, to: string, date: string): Flight[
       arrivalTime: arr.toISOString(),
       durationMinutes: duration,
       stops,
-      stopCity: stops > 0 ? stopOptions[stopIdx] : undefined,
+      stopCity: stops > 0 ? stopCity : undefined,
       aircraft,
       carryOnIncluded: baggage.carryOnIncluded,
       checkedBagPrice: baggage.checkedBagPrice,
-      economy: { price: economyPrice, seatsLeft },
-      business: { price: Math.round(economyPrice * 2.8 / 5) * 5, seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
-      first: { price: Math.round(economyPrice * 5.5 / 5) * 5, seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
+      economy:  { price: economyPrice,                                  seatsLeft },
+      business: { price: Math.round(economyPrice * 2.8 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.3)) },
+      first:    { price: Math.round(economyPrice * 5.5 / 5) * 5,       seatsLeft: Math.max(1, Math.floor(seatsLeft * 0.12)) },
     } as Flight
   }).sort((a, b) => new Date(a.departureTime).getTime() - new Date(b.departureTime).getTime())
 }
@@ -305,7 +425,7 @@ export function getPriceForClass(flight: Flight, cls: 'economy' | 'business' | '
 }
 
 export const ADD_ONS: AddOn[] = [
-  { id: 'checked-bag',  type: 'checkedBag',  name: 'Checked Bag (23kg)',       description: 'First checked bag allowance',                  price: 35, perPassenger: false },
+  { id: 'checked-bag', type: 'checkedBag',  name: 'Checked Bag (23kg)',       description: 'First checked bag allowance',                  price: 35, perPassenger: false },
   { id: 'extra-bag',   type: 'extraBag',    name: 'Extra Checked Bag (23kg)', description: 'Second checked bag',                           price: 50, perPassenger: false },
   { id: 'priority',    type: 'priority',    name: 'Priority Boarding',        description: 'Board among the first group of passengers',    price: 15, perPassenger: true  },
   { id: 'meal-std',    type: 'meal',        name: 'Standard Meal',            description: 'Choice of chicken or pasta',                   price: 12, perPassenger: true  },

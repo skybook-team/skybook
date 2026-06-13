@@ -147,9 +147,9 @@ export default function Home() {
       <section className="bg-gradient-to-r from-blue-700 to-blue-500 py-12 mb-0">
         <div className="max-w-2xl mx-auto px-4 text-center">
           <h2 className="text-2xl font-black text-white mb-2">Ready to take off?</h2>
-          <p className="text-blue-100 mb-6">Create a free account and unlock member-only fares.</p>
-          <Link href="/auth/register" className="inline-block bg-white text-blue-700 font-bold px-8 py-3 rounded-full hover:bg-blue-50 transition-colors shadow-md">
-            Get Started — It&apos;s Free
+          <p className="text-blue-100 mb-6">Search 500+ airlines instantly and find the best fares in seconds.</p>
+          <Link href="/" className="inline-block bg-white text-blue-700 font-bold px-8 py-3 rounded-full hover:bg-blue-50 transition-colors shadow-md">
+            Search Flights Now
           </Link>
         </div>
       </section>
