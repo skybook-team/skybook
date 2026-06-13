@@ -3,8 +3,8 @@
 import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
-  generateFlights, formatTime, formatDate, formatDuration,
-  getPriceForClass, AIRPORTS, AIRLINES, type Flight, type SearchParams,
+  generateFlights, formatTime, formatDate, formatDuration, formatTZAbbr,
+  getPriceForClass, AIRPORTS, AIRLINES, AIRPORT_TZ, type Flight, type SearchParams,
 } from '@/lib/data'
 import { setPendingBooking } from '@/lib/store'
 
@@ -130,7 +130,9 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
       if (stopFilter === '1' && f.stops > 1)   return false
       if (price > maxPrice) return false
       if (airlineFilter.size > 0 && !airlineFilter.has(f.airline.code)) return false
-      const h = new Date(f.departureTime).getHours()
+      const originTZf = AIRPORT_TZ[f.origin.code] ?? 'America/Chicago'
+      const hStr = new Intl.DateTimeFormat('en-US', { timeZone: originTZf, hour: '2-digit', hour12: false }).format(new Date(f.departureTime))
+      const h = parseInt(hStr) % 24
       if (timeFilter === 'morning'   && !(h >= 5  && h < 12)) return false
       if (timeFilter === 'afternoon' && !(h >= 12 && h < 17)) return false
       if (timeFilter === 'evening'   && !(h >= 17)) return false
@@ -243,7 +245,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
               <div>
                 <p className="text-sm font-semibold text-blue-800">Outbound selected — now pick your return</p>
                 <p className="text-xs text-blue-500 mt-0.5">
-                  {selectedOutbound!.airline.name} · {selectedOutbound!.flightNumber} · {formatTime(selectedOutbound!.departureTime)} → {formatTime(selectedOutbound!.arrivalTime)}
+                  {selectedOutbound!.airline.name} · {selectedOutbound!.flightNumber} · {formatTime(selectedOutbound!.departureTime, AIRPORT_TZ[selectedOutbound!.origin.code])} {formatTZAbbr(selectedOutbound!.departureTime, AIRPORT_TZ[selectedOutbound!.origin.code] ?? 'America/Chicago')} → {formatTime(selectedOutbound!.arrivalTime, AIRPORT_TZ[selectedOutbound!.destination.code])} {formatTZAbbr(selectedOutbound!.arrivalTime, AIRPORT_TZ[selectedOutbound!.destination.code] ?? 'America/Chicago')}
                 </p>
               </div>
               <button onClick={() => setSelectedOutbound(null)} className="text-xs text-blue-600 border border-blue-300 px-3 py-1 rounded-lg hover:bg-blue-100">Change</button>
@@ -363,7 +365,11 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
   const classData = flight[cabinClass]
   const dep       = new Date(flight.departureTime)
   const arr       = new Date(flight.arrivalTime)
-  const nextDay   = arr.getDate() !== dep.getDate()
+  const originTZ  = AIRPORT_TZ[flight.origin.code]      ?? 'America/Chicago'
+  const destTZ    = AIRPORT_TZ[flight.destination.code] ?? 'America/Chicago'
+  const depDay    = new Intl.DateTimeFormat('en-CA', { timeZone: originTZ }).format(dep)
+  const arrDay    = new Intl.DateTimeFormat('en-CA', { timeZone: destTZ   }).format(arr)
+  const nextDay   = depDay !== arrDay
   const [imgFailed, setImgFailed] = useState(false)
   const [expanded, setExpanded]   = useState(false)
 
@@ -402,7 +408,8 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
             <div className="flex items-center gap-2 sm:gap-3">
               {/* Depart */}
               <div className="shrink-0 text-center sm:text-left">
-                <p className="text-xl font-black text-gray-900 leading-none tabular-nums">{formatTime(dep.toISOString())}</p>
+                <p className="text-xl font-black text-gray-900 leading-none tabular-nums">{formatTime(flight.departureTime, originTZ)}</p>
+                <p className="text-xs text-gray-400 tabular-nums">{formatTZAbbr(flight.departureTime, originTZ)}</p>
                 <p className="text-sm font-bold text-gray-500 mt-0.5">{flight.origin.code}</p>
                 <p className="text-xs text-gray-400 hidden sm:block truncate max-w-[80px]">{flight.origin.city}</p>
               </div>
@@ -428,9 +435,10 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
               {/* Arrive */}
               <div className="shrink-0 text-center sm:text-right">
                 <p className="text-xl font-black text-gray-900 leading-none tabular-nums">
-                  {formatTime(arr.toISOString())}
+                  {formatTime(flight.arrivalTime, destTZ)}
                   {nextDay && <sup className="text-xs text-orange-400 ml-0.5 font-normal">+1</sup>}
                 </p>
+                <p className="text-xs text-gray-400 tabular-nums">{formatTZAbbr(flight.arrivalTime, destTZ)}</p>
                 <p className="text-sm font-bold text-gray-500 mt-0.5">{flight.destination.code}</p>
                 <p className="text-xs text-gray-400 hidden sm:block truncate max-w-[80px]">{flight.destination.city}</p>
               </div>
@@ -501,13 +509,13 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest }: {
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Departure</p>
               <p className="text-sm font-semibold text-gray-900">{flight.origin.code}</p>
               <p className="text-xs text-gray-500">Terminal {depTerm}</p>
-              <p className="text-xs text-gray-400">{formatDate(flight.departureTime)}</p>
+              <p className="text-xs text-gray-400">{formatDate(flight.departureTime, originTZ)}</p>
             </div>
             <div>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Arrival</p>
               <p className="text-sm font-semibold text-gray-900">{flight.destination.code}</p>
               <p className="text-xs text-gray-500">Terminal {arrTerm}</p>
-              <p className="text-xs text-gray-400">{formatDate(flight.arrivalTime)}</p>
+              <p className="text-xs text-gray-400">{formatDate(flight.arrivalTime, destTZ)}</p>
             </div>
             <div>
               <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1">Fare Class</p>

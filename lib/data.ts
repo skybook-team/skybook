@@ -263,6 +263,84 @@ export const AIRPORTS: Airport[] = [
   { code: 'GCM', city: 'Grand Cayman',       name: 'Owen Roberts International',               country: 'KY', lat: 19.2928,  lon: -81.3576  },
 ]
 
+// Airport → IANA timezone mapping
+export const AIRPORT_TZ: Record<string, string> = {
+  // Pacific (UTC-8/-7)
+  SFO:'America/Los_Angeles', LAX:'America/Los_Angeles', LAS:'America/Los_Angeles',
+  SEA:'America/Los_Angeles', SAN:'America/Los_Angeles', PDX:'America/Los_Angeles',
+  SJC:'America/Los_Angeles', OAK:'America/Los_Angeles', SMF:'America/Los_Angeles',
+  BUR:'America/Los_Angeles', LGB:'America/Los_Angeles', ONT:'America/Los_Angeles',
+  SNA:'America/Los_Angeles', PSP:'America/Los_Angeles', FAT:'America/Los_Angeles',
+  GEG:'America/Los_Angeles', BOI:'America/Los_Angeles',
+  // Mountain — Arizona (UTC-7 all year, no DST)
+  PHX:'America/Phoenix', TUS:'America/Phoenix',
+  // Mountain (UTC-7/-6)
+  DEN:'America/Denver', SLC:'America/Denver', ABQ:'America/Denver',
+  ELP:'America/Denver', BZN:'America/Denver', MSO:'America/Denver',
+  BIL:'America/Denver', COS:'America/Denver', GJT:'America/Denver',
+  ASE:'America/Denver', EGE:'America/Denver', JAC:'America/Denver',
+  MTJ:'America/Denver', DRO:'America/Denver',
+  // Central (UTC-6/-5)
+  ORD:'America/Chicago', DFW:'America/Chicago', IAH:'America/Chicago',
+  MCI:'America/Chicago', MSP:'America/Chicago', MDW:'America/Chicago',
+  STL:'America/Chicago', AUS:'America/Chicago', BNA:'America/Chicago',
+  MEM:'America/Chicago', HOU:'America/Chicago', SAT:'America/Chicago',
+  AMA:'America/Chicago', LBB:'America/Chicago', MAF:'America/Chicago',
+  CRP:'America/Chicago', SHV:'America/Chicago', MFE:'America/Chicago',
+  MSY:'America/Chicago', OMA:'America/Chicago', DSM:'America/Chicago',
+  CID:'America/Chicago', MSN:'America/Chicago', DAL:'America/Chicago',
+  TUL:'America/Chicago', OKC:'America/Chicago', ICT:'America/Chicago',
+  PNS:'America/Chicago', VPS:'America/Chicago', ECP:'America/Chicago',
+  MKE:'America/Chicago',
+  // Eastern (UTC-5/-4)
+  ATL:'America/New_York', JFK:'America/New_York', MIA:'America/New_York',
+  CLT:'America/New_York', BOS:'America/New_York', DTW:'America/New_York',
+  PHL:'America/New_York', EWR:'America/New_York', LGA:'America/New_York',
+  BWI:'America/New_York', TPA:'America/New_York', MCO:'America/New_York',
+  FLL:'America/New_York', RSW:'America/New_York', PBI:'America/New_York',
+  SRQ:'America/New_York', TLH:'America/New_York', SAV:'America/New_York',
+  CHS:'America/New_York', BHM:'America/New_York', HSV:'America/New_York',
+  TYS:'America/New_York', CHA:'America/New_York', ILM:'America/New_York',
+  MYR:'America/New_York', AVL:'America/New_York', GSP:'America/New_York',
+  GSO:'America/New_York', RIC:'America/New_York', ORF:'America/New_York',
+  DCA:'America/New_York', IAD:'America/New_York', BDL:'America/New_York',
+  PVD:'America/New_York', MHT:'America/New_York', BUF:'America/New_York',
+  ROC:'America/New_York', ALB:'America/New_York', SYR:'America/New_York',
+  BTV:'America/New_York', PWM:'America/New_York', BGR:'America/New_York',
+  PIT:'America/New_York', CLE:'America/New_York', CMH:'America/New_York',
+  IND:'America/New_York', JAX:'America/New_York', RDU:'America/New_York',
+  GRR:'America/New_York', SBN:'America/New_York',
+  // Hawaii (UTC-10, no DST)
+  HNL:'Pacific/Honolulu', OGG:'Pacific/Honolulu', KOA:'Pacific/Honolulu',
+  LIH:'Pacific/Honolulu', ITO:'Pacific/Honolulu',
+  // Alaska
+  ANC:'America/Anchorage', FAI:'America/Anchorage',
+  JNU:'America/Juneau',    KTN:'America/Juneau',
+  // International
+  LHR:'Europe/London',       CDG:'Europe/Paris',          NRT:'Asia/Tokyo',
+  DXB:'Asia/Dubai',          CUN:'America/Cancun',        YYZ:'America/Toronto',
+  YVR:'America/Vancouver',   YUL:'America/Toronto',       SYD:'Australia/Sydney',
+  MEX:'America/Mexico_City', GDL:'America/Mexico_City',   PVR:'America/Mexico_City',
+  SJD:'America/Mazatlan',    NAS:'America/Nassau',        MBJ:'America/Jamaica',
+  SJU:'America/Puerto_Rico', AUA:'America/Aruba',         GCM:'America/Cayman',
+}
+
+// Convert a local HH:MM time at a given IANA timezone + date to a UTC Date
+function localToUTC(dateStr: string, timeStr: string, tz: string): Date {
+  const probe = new Date(`${dateStr}T${timeStr}:00Z`)
+  const localHHMM = new Intl.DateTimeFormat('en-US', {
+    timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false,
+  }).format(probe)
+  const [lhStr, lmStr] = localHHMM.split(':')
+  const lh = parseInt(lhStr) % 24
+  const lm = parseInt(lmStr)
+  const [th, tm] = timeStr.split(':').map(Number)
+  let diff = (th * 60 + tm) - (lh * 60 + lm)
+  if (diff > 720)  diff -= 1440
+  if (diff < -720) diff += 1440
+  return new Date(probe.getTime() + diff * 60000)
+}
+
 // Google Flights' own airline logo CDN — same source used by google.com/flights
 const GSTATIC = (code: string) => `https://www.gstatic.com/flights/airline_logos/70px/${code}.png`
 
@@ -361,10 +439,9 @@ export function generateFlights(from: string, to: string, date: string): Flight[
         { code: sf.code, name: sf.code, color: '#555', logoUrl: `https://www.gstatic.com/flights/airline_logos/70px/${sf.code}.png` }
       const baggage = BAGGAGE[sf.code] || { carryOnIncluded: true, checkedBagPrice: 35 }
 
-      const [hh, mm] = sf.dep.split(':').map(Number)
-      const depDate  = new Date(`${date}T00:00:00`)
-      depDate.setHours(hh, mm, 0, 0)
-      const arrDate  = new Date(depDate.getTime() + sf.dur * 60000)
+      const fromTZ  = AIRPORT_TZ[from] ?? 'America/Chicago'
+      const depDate = localToUTC(date, sf.dep, fromTZ)
+      const arrDate = new Date(depDate.getTime() + sf.dur * 60000)
 
       const economyPrice = applyDatePricing(sf.fare, date)
       // Seed seats to be deterministic per flight
@@ -415,9 +492,10 @@ export function generateFlights(from: string, to: string, date: string): Flight[
     const timeSlots = [5,6,6,7,7,8,8,9,10,11,12,13,14,15,16,17,17,18,19,20,21,22]
     const depHour = timeSlots[Math.floor(r() * timeSlots.length)]
     const depMin  = Math.floor(r() * 4) * 15
+    const depTimeStr = `${String(depHour).padStart(2,'0')}:${String(depMin).padStart(2,'0')}`
 
-    const dep = new Date(`${date}T00:00:00`)
-    dep.setHours(depHour, depMin, 0, 0)
+    const fromTZFb = AIRPORT_TZ[from] ?? 'America/Chicago'
+    const dep      = localToUTC(date, depTimeStr, fromTZFb)
 
     const durationVariance = 0.90 + r() * 0.22
     const duration = Math.round(baseDuration * durationVariance)
@@ -460,12 +538,23 @@ export function formatDuration(minutes: number): string {
   return m > 0 ? `${h}h ${m}m` : `${h}h`
 }
 
-export function formatTime(iso: string): string {
-  return new Date(iso).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true })
+export function formatTime(iso: string, tz?: string): string {
+  return new Date(iso).toLocaleTimeString('en-US', {
+    hour: 'numeric', minute: '2-digit', hour12: true,
+    ...(tz ? { timeZone: tz } : {}),
+  })
 }
 
-export function formatDate(iso: string): string {
-  return new Date(iso).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+export function formatDate(iso: string, tz?: string): string {
+  return new Date(iso).toLocaleDateString('en-US', {
+    weekday: 'short', month: 'short', day: 'numeric',
+    ...(tz ? { timeZone: tz } : {}),
+  })
+}
+
+export function formatTZAbbr(iso: string, tz: string): string {
+  return new Intl.DateTimeFormat('en-US', { timeZone: tz, timeZoneName: 'short' })
+    .format(new Date(iso)).split(' ').pop() ?? ''
 }
 
 export function getPriceForClass(flight: Flight, cls: 'economy' | 'business' | 'first'): number {
