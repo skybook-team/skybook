@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     description: "Compare flights across all major US airlines. Book with no fees.",
   },
   robots: { index: true, follow: true },
+  verification: { google: 'Oc2hn6VGpPjZIKFFe5NXMSM5umF3tkQpM90WZGAWXwU' },
 };
 
 export default function RootLayout({
