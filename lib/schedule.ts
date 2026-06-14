@@ -534,7 +534,7 @@ const S: Record<string, ScheduledFlight[]> = {
     { code: 'WN', num: 3634, dep: '22:50', dur: 255, ac: 'Boeing 737-700',   fare: 129 },
     { code: 'WN', num: 1683, dep: '23:05', dur: 265, ac: 'Boeing 737 MAX 8', fare: 132, days:[1,2,3,4,5,6] },
     // ── 1-stop ────────────────────────────────────────────────────────────
-    { code: 'AA', num: 2228, dep: '23:29', dur: 573, ac: 'Boeing 737-800',   fare:  91, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 2228, dep: '23:29', dur: 453, ac: 'Boeing 737-800',   fare:  91, stops: 1, via: 'DFW' },
     { code: 'AA', num: 2251, dep: '06:45', dur: 541, ac: 'Boeing 737-800',   fare:  87, stops: 1, via: 'DFW' },
     { code: 'AA', num: 1153, dep: '12:36', dur: 394, ac: 'Airbus A321',      fare:  92, stops: 1, via: 'DFW' },
     { code: 'AA', num: 1789, dep: '13:17', dur: 446, ac: 'Boeing 737-800',   fare:  89, stops: 1, via: 'DFW' },
