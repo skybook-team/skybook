@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { AIRPORTS, AIRLINES, AIRPORT_TZ, getBasePrice, localToUTC, type Flight } from '@/lib/data'
-import { applyDatePricing } from '@/lib/schedule'
+import { AIRPORTS, AIRLINES, AIRPORT_TZ, getBasePrice, localToUTC, generateFlights, type Flight } from '@/lib/data'
+import { applyDatePricing, getScheduledFlights } from '@/lib/schedule'
 
 // ── IATA aircraft type codes → readable names (used by Amadeus path) ─────────
 const AIRCRAFT_CODES: Record<string, string> = {
@@ -262,18 +262,28 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Missing params' }, { status: 400 })
   }
 
-  // 1. Try SerpAPI (real Google Flights schedules)
+  // Always load local schedule flights for this route/date
+  const localFlights: Flight[] = generateFlights(from, to, date)
+
+  // 1. Try SerpAPI — merge with local so user sees full list
   const serpFlights = await fetchFromSerpAPI(from, to, date, passengers)
-  if (serpFlights) {
-    return NextResponse.json({ flights: serpFlights, source: 'live' })
+  if (serpFlights && serpFlights.length > 0) {
+    // Deduplicate: keep serp flights, add local flights whose flight number
+    // doesn't already appear in the serp results
+    const serpNums = new Set(serpFlights.map(f => f.flightNumber))
+    const extra    = localFlights.filter(f => !serpNums.has(f.flightNumber))
+    const merged   = [...serpFlights, ...extra]
+    return NextResponse.json({ flights: merged, source: 'live' })
   }
 
   // 2. Try Amadeus (test environment fallback)
   const amFlights = await fetchFromAmadeus(from, to, date, passengers, cabinClass)
-  if (amFlights) {
-    return NextResponse.json({ flights: amFlights, source: 'live' })
+  if (amFlights && amFlights.length > 0) {
+    const amNums = new Set(amFlights.map(f => f.flightNumber))
+    const extra  = localFlights.filter(f => !amNums.has(f.flightNumber))
+    return NextResponse.json({ flights: [...amFlights, ...extra], source: 'live' })
   }
 
-  // 3. Signal to client to use local schedule/generated data
-  return NextResponse.json({ flights: [], source: 'local' })
+  // 3. Use local schedule/generated data
+  return NextResponse.json({ flights: localFlights, source: 'local' })
 }
