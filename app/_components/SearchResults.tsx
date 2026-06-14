@@ -364,7 +364,6 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outb
   const classData = flight[cabinClass]
   const dep       = new Date(flight.departureTime)
   const arr       = new Date(flight.arrivalTime)
-  const viewing   = 3 + (([...flight.id].reduce((a,c) => ((a*31)+c.charCodeAt(0))|0, 0) & 0x7fffffff) % 11)
   const originTZ  = AIRPORT_TZ[flight.origin.code]      ?? 'America/Chicago'
   const destTZ    = AIRPORT_TZ[flight.destination.code] ?? 'America/Chicago'
   const depDay    = new Intl.DateTimeFormat('en-CA', { timeZone: originTZ }).format(dep)
@@ -491,9 +490,6 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outb
             {classData.seatsLeft <= 5 && (
               <p className="text-xs text-red-500 font-semibold mb-1">{classData.seatsLeft} left!</p>
             )}
-            <p className="text-[10px] text-orange-500 font-semibold mb-1.5">
-              🔥 {viewing} people viewing
-            </p>
             <button onClick={() => onSelect(flight)}
               className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors w-full shadow-sm">
               {outboundPrice !== undefined ? 'Book trip' : minReturnPrice !== undefined ? 'Select outbound' : 'Select'}
