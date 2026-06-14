@@ -4,6 +4,7 @@ import "./globals.css";
 import Navbar from "@/app/_components/Navbar";
 import Footer from "@/app/_components/Footer";
 import RecentBookingToast from "@/app/_components/RecentBookingToast";
+import { Analytics } from "@vercel/analytics/next";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -40,6 +41,7 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <RecentBookingToast />
+        <Analytics />
       </body>
     </html>
   );
