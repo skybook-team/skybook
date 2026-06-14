@@ -57,6 +57,12 @@ export interface AddOn {
   perPassenger: boolean
 }
 
+export interface MultiCityLeg {
+  from: string
+  to: string
+  date: string
+}
+
 export interface SearchParams {
   from: string
   to: string
@@ -64,13 +70,15 @@ export interface SearchParams {
   returnDate?: string
   passengers: number
   cabinClass: 'economy' | 'business' | 'first'
-  tripType: 'oneWay' | 'roundTrip'
+  tripType: 'oneWay' | 'roundTrip' | 'multicity'
+  legs?: MultiCityLeg[]
 }
 
 export interface PendingBooking {
   id: string
   outboundFlight: Flight
   returnFlight?: Flight
+  multiCityFlights?: Flight[]
   searchParams: SearchParams
 }
 

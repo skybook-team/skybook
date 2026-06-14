@@ -4,13 +4,16 @@ import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   generateFlights, formatTime, formatDate, formatDuration, formatTZAbbr, formatPrice,
-  getPriceForClass, fareName, AIRPORTS, AIRLINES, AIRPORT_TZ, type Flight, type SearchParams,
+  getPriceForClass, fareName, AIRPORTS, AIRLINES, AIRPORT_TZ,
+  type Flight, type SearchParams, type MultiCityLeg,
 } from '@/lib/data'
 import { setPendingBooking } from '@/lib/store'
 
 interface Props {
   from: string; to: string; date: string; returnDate?: string
-  passengers: number; cabinClass: 'economy' | 'business' | 'first'; tripType: 'oneWay' | 'roundTrip'
+  passengers: number; cabinClass: 'economy' | 'business' | 'first'
+  tripType: 'oneWay' | 'roundTrip' | 'multicity'
+  legs?: MultiCityLeg[]
 }
 type SortKey = 'best' | 'cheapest' | 'fastest' | 'earliest'
 type Source  = 'live' | 'mock' | 'loading'
@@ -72,7 +75,7 @@ async function fetchFlights(
 
 // ── Main component ─────────────────────────────────────────────────────────
 
-export default function SearchResults({ from, to, date, returnDate, passengers, cabinClass, tripType }: Props) {
+export default function SearchResults({ from, to, date, returnDate, passengers, cabinClass, tripType, legs }: Props) {
   const router = useRouter()
 
   const [outboundFlights,  setOutboundFlights]  = useState<Flight[]>([])
@@ -86,7 +89,26 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
   const [timeFilter,       setTimeFilter]        = useState<'any'|'morning'|'afternoon'|'evening'>('any')
   const [selectedOutbound, setSelectedOutbound]  = useState<Flight | null>(null)
 
+  // Multi-city state
+  const [mcFlightsPerLeg,  setMcFlightsPerLeg]  = useState<Flight[][]>([])
+  const [mcSelected,       setMcSelected]        = useState<Flight[]>([])
+  const [mcCurrentLeg,     setMcCurrentLeg]      = useState(0)
+
   useEffect(() => {
+    if (tripType === 'multicity') {
+      if (!legs || legs.length < 2) return
+      setLoading(true)
+      setMcFlightsPerLeg([])
+      setMcSelected([])
+      setMcCurrentLeg(0)
+      Promise.all(legs.map(l => fetchFlights(l.from, l.to, l.date, passengers, cabinClass))).then(results => {
+        setMcFlightsPerLeg(results.map(r => r.flights))
+        setSource(results[0]?.source ?? 'mock')
+        setLoading(false)
+      })
+      return
+    }
+
     if (!from || !to || !date) return
     setLoading(true)
     setOutboundFlights([])
@@ -107,7 +129,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
       setLoading(false)
     })
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [from, to, date, returnDate, tripType, passengers, cabinClass])
+  }, [from, to, date, returnDate, tripType, passengers, cabinClass, legs])
 
   const fromAirport   = AIRPORTS.find(a => a.code === from)
   const toAirport     = AIRPORTS.find(a => a.code === to)
@@ -144,25 +166,148 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
   const filteredRet = useMemo(() => sortFlights(applyFilters(returnFlights)),   [returnFlights,   sortFlights, applyFilters])
   const showReturn  = tripType === 'roundTrip' && !!selectedOutbound
 
-  // Cheapest return leg price — used to show estimated RT total on outbound cards
   const minReturnPrice = useMemo(() =>
     tripType === 'roundTrip' && returnFlights.length
       ? Math.min(...returnFlights.map(f => getPriceForClass(f, cabinClass)))
       : undefined,
   [tripType, returnFlights, cabinClass])
 
-  if (!from || !to || !date) return (
+  if (tripType !== 'multicity' && (!from || !to || !date)) return (
     <div className="text-center py-20 text-gray-400">Enter a search above to find flights.</div>
+  )
+  if (tripType === 'multicity' && (!legs || legs.length < 2)) return (
+    <div className="text-center py-20 text-gray-400">Select at least two cities above to find flights.</div>
   )
 
   function selectFlight(outbound: Flight, ret?: Flight) {
     const id = crypto.randomUUID()
-    setPendingBooking({ id, outboundFlight: outbound, returnFlight: ret, searchParams: { from, to, date, returnDate, passengers, cabinClass, tripType } as SearchParams })
+    setPendingBooking({ id, outboundFlight: outbound, returnFlight: ret, searchParams: { from, to, date, returnDate, passengers, cabinClass, tripType, legs } as SearchParams })
     router.push(`/booking/${id}`)
+  }
+
+  function selectMcFlight(flight: Flight) {
+    const newSelected = [...mcSelected, flight]
+    if (mcCurrentLeg + 1 < (legs?.length ?? 0)) {
+      setMcSelected(newSelected)
+      setMcCurrentLeg(mcCurrentLeg + 1)
+    } else {
+      // All legs selected — book
+      const id = crypto.randomUUID()
+      const [first, ...rest] = newSelected
+      setPendingBooking({
+        id,
+        outboundFlight: first,
+        multiCityFlights: newSelected,
+        searchParams: { from: legs![0].from, to: legs![legs!.length - 1].to, date: legs![0].date, passengers, cabinClass, tripType: 'multicity', legs } as SearchParams,
+      })
+      router.push(`/booking/${id}`)
+    }
   }
 
   const presentAirlines = [...new Set(outboundFlights.map(f => f.airline.code))]
     .map(code => AIRLINES.find(a => a.code === code)!).filter(Boolean)
+
+  // ── Multi-city render ────────────────────────────────────────────────────
+  if (tripType === 'multicity' && legs) {
+    const currentLeg    = legs[mcCurrentLeg]
+    const currentFlights = mcFlightsPerLeg[mcCurrentLeg] ?? []
+    const filtered       = sortFlights(applyFilters(currentFlights))
+    const cheapest       = filtered.length ? Math.min(...filtered.map(f => getPriceForClass(f, cabinClass))) : 0
+    const totalSoFar     = mcSelected.reduce((s, f) => s + getPriceForClass(f, cabinClass), 0)
+
+    return (
+      <div className="flex flex-col lg:flex-row gap-6">
+        <aside className="w-full lg:w-60 shrink-0 space-y-4">
+          {/* Progress */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-4">
+            <h3 className="font-bold text-gray-900 mb-3 text-sm">Your Trip</h3>
+            <div className="space-y-2">
+              {legs.map((leg, idx) => {
+                const done    = idx < mcCurrentLeg
+                const current = idx === mcCurrentLeg
+                const sel     = mcSelected[idx]
+                return (
+                  <div key={idx} className={`flex items-start gap-2 p-2 rounded-xl text-xs ${current ? 'bg-blue-50 border border-blue-200' : done ? 'bg-green-50 border border-green-200' : 'border border-gray-100'}`}>
+                    <span className={`mt-0.5 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-black shrink-0 ${current ? 'bg-blue-600 text-white' : done ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
+                      {done ? '✓' : idx + 1}
+                    </span>
+                    <div className="flex-1 min-w-0">
+                      <p className={`font-semibold ${current ? 'text-blue-800' : done ? 'text-green-800' : 'text-gray-400'}`}>
+                        {leg.from} → {leg.to}
+                      </p>
+                      {done && sel && (
+                        <p className="text-gray-500 truncate">{sel.airline.name} · {formatTime(sel.departureTime, AIRPORT_TZ[sel.origin.code])}</p>
+                      )}
+                      {current && <p className="text-blue-500">Selecting now…</p>}
+                    </div>
+                    {done && (
+                      <button onClick={() => { setMcCurrentLeg(idx); setMcSelected(prev => prev.slice(0, idx)) }}
+                        className="text-blue-500 hover:text-blue-700 font-medium shrink-0">Edit</button>
+                    )}
+                  </div>
+                )
+              })}
+            </div>
+            {mcSelected.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <p className="text-xs text-gray-500">Subtotal so far</p>
+                <p className="text-base font-black text-gray-900">${formatPrice(totalSoFar * passengers)}</p>
+                <p className="text-[10px] text-gray-400">{passengers} passenger{passengers > 1 ? 's' : ''}, excl. taxes</p>
+              </div>
+            )}
+          </div>
+
+          {/* Filters */}
+          <div className="bg-white rounded-2xl border border-gray-200 p-4">
+            <h3 className="font-bold text-gray-900 mb-4 text-sm">Filter Leg {mcCurrentLeg + 1}</h3>
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Stops</p>
+              <div className="flex gap-2">
+                {([['any','Any'],['0','Nonstop'],['1','1 Stop']] as const).map(([v,l]) => (
+                  <button key={v} onClick={() => setStopFilter(v)}
+                    className={`flex-1 py-1.5 rounded-lg text-xs font-semibold border transition-colors ${stopFilter===v ? 'bg-blue-600 text-white border-blue-600' : 'border-gray-200 text-gray-600 hover:border-blue-300'}`}>
+                    {l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Sort</p>
+              <div className="flex flex-wrap gap-1.5">
+                {(['best','cheapest','fastest','earliest'] as SortKey[]).map(s => (
+                  <button key={s} onClick={() => setSort(s)}
+                    className={`px-3 py-1 rounded-lg text-xs font-semibold capitalize transition-colors ${sort===s ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-blue-300'}`}>
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <div className="flex-1 min-w-0">
+          <div className="mb-4 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3">
+            <p className="text-xs text-blue-500 font-semibold uppercase tracking-wide mb-0.5">
+              Leg {mcCurrentLeg + 1} of {legs.length}
+            </p>
+            <p className="text-base font-bold text-blue-900">
+              {AIRPORTS.find(a => a.code === currentLeg.from)?.city ?? currentLeg.from} ({currentLeg.from})
+              {' → '}
+              {AIRPORTS.find(a => a.code === currentLeg.to)?.city ?? currentLeg.to} ({currentLeg.to})
+              {' · '}{currentLeg.date}
+            </p>
+          </div>
+          <FlightList
+            flights={filtered} cabinClass={cabinClass} passengers={passengers}
+            sort={sort} onSortChange={setSort} loading={loading} source={source}
+            onSelect={selectMcFlight}
+            label={`${currentLeg.from} → ${currentLeg.to} · ${currentLeg.date}`}
+            cheapest={cheapest}
+          />
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="flex flex-col lg:flex-row gap-6">

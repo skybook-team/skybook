@@ -68,12 +68,14 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
     </div>
   )
 
-  const { outboundFlight: flight, returnFlight, searchParams } = pending
+  const { outboundFlight: flight, returnFlight, multiCityFlights, searchParams } = pending
   const { cabinClass, passengers: passengerCount } = searchParams
 
-  const basePerPerson   = getPriceForClass(flight, cabinClass)
-  const returnPerPerson = returnFlight ? getPriceForClass(returnFlight, cabinClass) : 0
-  const baseFare        = (basePerPerson + returnPerPerson) * passengerCount
+  const isMultiCity     = searchParams.tripType === 'multicity' && !!multiCityFlights
+  const basePerPerson   = isMultiCity
+    ? multiCityFlights!.reduce((s, f) => s + getPriceForClass(f, cabinClass), 0)
+    : getPriceForClass(flight, cabinClass) + (returnFlight ? getPriceForClass(returnFlight, cabinClass) : 0)
+  const baseFare        = basePerPerson * passengerCount
   const taxes           = Math.round(baseFare * 0.14 * 100) / 100
   const totalPrice      = baseFare + taxes + seatAddonCost
 
@@ -158,15 +160,27 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
       <div className="bg-white border-b border-gray-200">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
           <div className="flex flex-wrap items-center gap-3 text-sm text-gray-600">
-            <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
-              style={{ backgroundColor: flight.airline.color }}>
-              {flight.airline.code}
-            </span>
-            <span className="font-medium text-gray-900">{flight.origin.code} → {flight.destination.code}</span>
-            <span className="text-gray-400">·</span>
-            <span>{formatDate(flight.departureTime, AIRPORT_TZ[flight.origin.code])}</span>
-            <span className="text-gray-400">·</span>
-            <span>{formatTime(flight.departureTime, AIRPORT_TZ[flight.origin.code])} – {formatTime(flight.arrivalTime, AIRPORT_TZ[flight.destination.code])}</span>
+            {isMultiCity ? (
+              <>
+                <span className="font-medium text-gray-900">
+                  {multiCityFlights!.map(f => f.origin.code).join(' → ')} → {multiCityFlights![multiCityFlights!.length - 1].destination.code}
+                </span>
+                <span className="text-gray-400">·</span>
+                <span>Multi-City</span>
+              </>
+            ) : (
+              <>
+                <span className="w-7 h-7 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+                  style={{ backgroundColor: flight.airline.color }}>
+                  {flight.airline.code}
+                </span>
+                <span className="font-medium text-gray-900">{flight.origin.code} → {flight.destination.code}</span>
+                <span className="text-gray-400">·</span>
+                <span>{formatDate(flight.departureTime, AIRPORT_TZ[flight.origin.code])}</span>
+                <span className="text-gray-400">·</span>
+                <span>{formatTime(flight.departureTime, AIRPORT_TZ[flight.origin.code])} – {formatTime(flight.arrivalTime, AIRPORT_TZ[flight.destination.code])}</span>
+              </>
+            )}
             <span className="text-gray-400">·</span>
             <span>{fareName(flight.airline.code, cabinClass)}</span>
             <span className="text-gray-400">·</span>
@@ -407,12 +421,19 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
                 <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3">
                   <p className="text-white font-bold text-sm">Your Itinerary</p>
                   <p className="text-blue-200 text-xs mt-0.5">
-                    {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · {fareName(flight.airline.code, cabinClass)}
+                    {isMultiCity ? 'Multi-City' : returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · {fareName(flight.airline.code, cabinClass)}
                   </p>
                 </div>
                 <div className="p-4 space-y-4">
-                  <FlightMini flight={flight} cabinClass={cabinClass} label="Outbound" />
-                  {returnFlight && <FlightMini flight={returnFlight} cabinClass={cabinClass} label="Return" />}
+                  {isMultiCity
+                    ? multiCityFlights!.map((f, i) => (
+                        <FlightMini key={f.id} flight={f} cabinClass={cabinClass} label={`Leg ${i + 1}`} />
+                      ))
+                    : <>
+                        <FlightMini flight={flight} cabinClass={cabinClass} label="Outbound" />
+                        {returnFlight && <FlightMini flight={returnFlight} cabinClass={cabinClass} label="Return" />}
+                      </>
+                  }
 
                   {selectedSeats.length > 0 && (
                     <div className="bg-blue-50 rounded-lg px-3 py-2">
