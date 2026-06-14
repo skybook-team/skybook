@@ -85,7 +85,7 @@ export default function ContactPage() {
                   {
                     icon: '✉️',
                     label: 'Email support',
-                    value: 'support@skybook.com',
+                    value: 'support@skybookfare.com',
                     detail: 'Typical response time: under 4 hours',
                   },
                   {

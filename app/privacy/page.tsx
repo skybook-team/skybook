@@ -64,7 +64,7 @@ export default function PrivacyPage() {
               title: '6. Your Rights',
               body: `Depending on your jurisdiction, you may have the right to access, correct, or delete your personal
               information; to restrict or object to certain processing; and to data portability. To exercise any of
-              these rights, contact us at privacy@skybook.com. We will respond within 30 days.`,
+              these rights, contact us at privacy@skybookfare.com. We will respond within 30 days.`,
             },
             {
               title: '7. Data Retention',
@@ -86,7 +86,7 @@ export default function PrivacyPage() {
             },
             {
               title: '10. Contact Us',
-              body: `For privacy-related inquiries, contact us at: privacy@skybook.com · SkyBook, Inc., 601 Montgomery St,
+              body: `For privacy-related inquiries, contact us at: privacy@skybookfare.com · SkyBook, Inc., 601 Montgomery St,
               Suite 1400, San Francisco, CA 94111.`,
             },
           ].map(section => (

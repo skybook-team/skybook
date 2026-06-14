@@ -72,7 +72,7 @@ export default function TermsPage() {
             },
             {
               title: '12. Contact',
-              body: 'Questions about these Terms? Contact us at legal@skybook.com or SkyBook, Inc., 601 Montgomery St, Suite 1400, San Francisco, CA 94111.',
+              body: 'Questions about these Terms? Contact us at legal@skybookfare.com or SkyBook, Inc., 601 Montgomery St, Suite 1400, San Francisco, CA 94111.',
             },
           ].map(s => (
             <div key={s.title} className="mb-7">

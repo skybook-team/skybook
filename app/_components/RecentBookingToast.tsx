@@ -15,7 +15,7 @@ const BOOKINGS = [
   { name: 'Anita P.',  from: 'Seattle',        to: 'San Francisco', price: 89,  ago: 1  },
   { name: 'Brian F.',  from: 'Denver',         to: 'Orlando',       price: 148, ago: 7  },
   { name: 'Mei L.',    from: 'New York',       to: 'Chicago',       price: 103, ago: 4  },
-  { name: 'Kevin A.',  from: 'Miami',          to: 'New York',      price: 176, ago: 2  },
+  { name: 'Nathan A.', from: 'Miami',          to: 'New York',      price: 176, ago: 2  },
   { name: 'Jasmine C.',from: 'Los Angeles',    to: 'Las Vegas',     price: 74,  ago: 1  },
   { name: 'Omar S.',   from: 'Dallas',         to: 'Miami',         price: 116, ago: 9  },
 ]
