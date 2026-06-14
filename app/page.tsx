@@ -3,6 +3,38 @@ import AirlineLogoGrid from '@/app/_components/AirlineLogoGrid'
 import BookingCounter from '@/app/_components/BookingCounter'
 import Link from 'next/link'
 
+const FAQ_SCHEMA = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Does SkyBook Fare charge booking fees?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. SkyBook Fare charges zero booking fees. The price you see includes all taxes and carrier fees — nothing is added at checkout." }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I find cheap flights on SkyBook Fare?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Enter your origin, destination, and travel dates on the homepage. SkyBook Fare searches all major US airlines including American, Delta, United, Southwest, JetBlue, and Alaska to find the lowest fares." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I book round-trip flights on SkyBook Fare?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. Select 'Round Trip' on the search form, enter your outbound and return dates, and the total round-trip price is shown upfront on every flight result." }
+    },
+    {
+      "@type": "Question",
+      "name": "Which airlines does SkyBook Fare search?",
+      "acceptedAnswer": { "@type": "Answer", "text": "SkyBook Fare searches American Airlines, Delta, United, Southwest, JetBlue, Alaska Airlines, Frontier, and Spirit across 150+ US airports." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is SkyBook Fare secure?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. SkyBook Fare uses 256-bit SSL encryption, is PCI DSS Level 1 certified, and SOC 2 Type II attested. Your payment data is never stored on our servers." }
+    },
+  ]
+}
+
 const DEALS = [
   { from: 'JFK', to: 'LAX', fromCity: 'New York',      toCity: 'Los Angeles',  price: 178, was: 329, tags: ['Nonstop available'], color: 'from-violet-500 to-purple-600', daysOut: 21 },
   { from: 'ORD', to: 'MIA', fromCity: 'Chicago',       toCity: 'Miami',        price: 138, was: 259, tags: ['Best seller'],        color: 'from-rose-500 to-pink-600',    daysOut: 18 },
@@ -21,6 +53,7 @@ function dealDate(daysOut: number): string {
 export default function Home() {
   return (
     <div className="bg-gray-50 min-h-screen">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }} />
 
       {/* ── Hero ── */}
       <section className="relative" style={{ background: 'linear-gradient(145deg,#0a0f3d 0%,#1a3ab8 40%,#0e7bd4 75%,#00c2e8 100%)' }}>
@@ -228,6 +261,24 @@ export default function Home() {
                 </div>
               </div>
             </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ── FAQ ── */}
+      <section className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
+        <h2 className="text-3xl font-black text-gray-900 text-center mb-8">Frequently Asked Questions</h2>
+        <div className="space-y-3">
+          {FAQ_SCHEMA.mainEntity.map((q) => (
+            <details key={q.name} className="bg-white rounded-2xl border border-gray-100 shadow-sm group">
+              <summary className="flex items-center justify-between px-6 py-4 cursor-pointer list-none">
+                <span className="font-semibold text-gray-900 text-sm pr-4">{q.name}</span>
+                <svg className="w-4 h-4 text-gray-400 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <p className="px-6 pb-4 text-sm text-gray-500 leading-relaxed">{q.acceptedAnswer.text}</p>
+            </details>
           ))}
         </div>
       </section>

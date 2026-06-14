@@ -41,6 +41,41 @@ export default function RootLayout({
         <main className="flex-1">{children}</main>
         <Footer />
         <Analytics />
+
+        {/* Structured data — Organization + WebSite (sitelinks search box) */}
+        <Script id="schema-org" type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify([
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "SkyBook Fare",
+            "url": "https://skybookfare.com",
+            "logo": "https://skybookfare.com/logo.png",
+            "description": "Search and compare cheap flights across all major US airlines. No booking fees, real prices.",
+            "contactPoint": {
+              "@type": "ContactPoint",
+              "telephone": "+1-800-759-2665",
+              "contactType": "customer support",
+              "availableLanguage": "English",
+              "areaServed": "US"
+            },
+            "sameAs": []
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "SkyBook Fare",
+            "url": "https://skybookfare.com",
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": {
+                "@type": "EntryPoint",
+                "urlTemplate": "https://skybookfare.com/search?from={from}&to={to}&date={date}&passengers=1&cabinClass=economy&tripType=roundTrip"
+              },
+              "query-input": "required name=from"
+            }
+          }
+        ]) }} />
+
         <Script id="clarity" strategy="afterInteractive">{`
           (function(c,l,a,r,i,t,y){
             c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
