@@ -516,6 +516,19 @@ export function formatPrice(amount: number): string {
   return amount.toFixed(2)
 }
 
+const FARE_NAMES: Record<string, { economy: string; business: string; first: string }> = {
+  AA: { economy: 'Main Cabin',     business: 'Main Select',       first: 'First'           },
+  DL: { economy: 'Delta Main',     business: 'Delta One',         first: 'First Class'     },
+  UA: { economy: 'Economy',        business: 'Polaris Business',  first: 'United First'    },
+  WN: { economy: 'Wanna Get Away', business: 'Anytime',           first: 'Business Select' },
+  B6: { economy: 'Blue',           business: 'Mint',              first: 'Mint Suite'      },
+  AS: { economy: 'Saver',          business: 'First Class',       first: 'First Class'     },
+  F9: { economy: 'Economy',        business: 'Stretch',           first: 'Stretch'         },
+}
+export function fareName(airlineCode: string, cabin: 'economy'|'business'|'first'): string {
+  return (FARE_NAMES[airlineCode] ?? {})[cabin] ?? (cabin.charAt(0).toUpperCase() + cabin.slice(1))
+}
+
 export function formatDuration(minutes: number): string {
   const h = Math.floor(minutes / 60)
   const m = minutes % 60

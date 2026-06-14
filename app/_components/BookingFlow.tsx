@@ -9,6 +9,7 @@ import {
   formatDuration,
   formatPrice,
   getPriceForClass,
+  fareName,
   AIRPORT_TZ,
   type Flight,
   type Passenger,
@@ -167,7 +168,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
             <span className="text-gray-400">·</span>
             <span>{formatTime(flight.departureTime, AIRPORT_TZ[flight.origin.code])} – {formatTime(flight.arrivalTime, AIRPORT_TZ[flight.destination.code])}</span>
             <span className="text-gray-400">·</span>
-            <span className="capitalize">{cabinClass}</span>
+            <span>{fareName(flight.airline.code, cabinClass)}</span>
             <span className="text-gray-400">·</span>
             <span>{passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'}</span>
           </div>
@@ -406,7 +407,7 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
                 <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3">
                   <p className="text-white font-bold text-sm">Your Itinerary</p>
                   <p className="text-blue-200 text-xs mt-0.5">
-                    {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · <span className="capitalize">{cabinClass}</span>
+                    {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · {fareName(flight.airline.code, cabinClass)}
                   </p>
                 </div>
                 <div className="p-4 space-y-4">
@@ -519,7 +520,7 @@ function FlightMini({ flight, cabinClass, label }: { flight: Flight; cabinClass:
             {flight.checkedBagPrice === null ? '✓ 1st bag free' : `Bag +$${flight.checkedBagPrice}`}
           </span>
         </div>
-        <div className="text-[11px] text-gray-400 capitalize">{cabinClass} · ${formatPrice(getPriceForClass(flight, cabinClass))} / person</div>
+        <div className="text-[11px] text-gray-400">{fareName(flight.airline.code, cabinClass)} · ${formatPrice(getPriceForClass(flight, cabinClass))} / person</div>
       </div>
     </div>
   )

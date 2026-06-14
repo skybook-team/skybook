@@ -4,7 +4,7 @@ import { useState, useMemo, useEffect, useCallback } from 'react'
 import { useRouter } from 'next/navigation'
 import {
   generateFlights, formatTime, formatDate, formatDuration, formatTZAbbr, formatPrice,
-  getPriceForClass, AIRPORTS, AIRLINES, AIRPORT_TZ, type Flight, type SearchParams,
+  getPriceForClass, fareName, AIRPORTS, AIRLINES, AIRPORT_TZ, type Flight, type SearchParams,
 } from '@/lib/data'
 import { setPendingBooking } from '@/lib/store'
 
@@ -16,29 +16,32 @@ type SortKey = 'best' | 'cheapest' | 'fastest' | 'earliest'
 type Source  = 'live' | 'mock' | 'loading'
 
 // ── Airline-specific fare class names ───────────────────────────────────────
-const FARE_NAMES: Record<string, { economy: string; business: string; first: string }> = {
-  AA: { economy: 'Main',           business: 'Flagship Business', first: 'Flagship First'  },
-  DL: { economy: 'Delta Main',     business: 'Delta One',         first: 'First Class'     },
-  UA: { economy: 'Economy',        business: 'Polaris Business',  first: 'United First'    },
-  WN: { economy: 'Economy',        business: 'Business Select',   first: 'Business Select' },
-  B6: { economy: 'Blue',           business: 'Mint',              first: 'Mint Suite'      },
-  AS: { economy: 'Saver',          business: 'First Class',       first: 'First Class'     },
-  F9: { economy: 'Economy',        business: 'Stretch',           first: 'Stretch'         },
-}
-function fareName(code: string, cabin: 'economy'|'business'|'first'): string {
-  return (FARE_NAMES[code] ?? {})[cabin] ?? (cabin.charAt(0).toUpperCase() + cabin.slice(1))
-}
-
 // ── Fare rules per airline + cabin ──────────────────────────────────────────
 interface FareRule { changes: string; refund: string }
-const AIRLINE_RULES: Partial<Record<string, Record<'economy'|'business'|'first', FareRule>>> = {}
+const AIRLINE_RULES: Partial<Record<string, Record<'economy'|'business'|'first', FareRule>>> = {
+  AA: {
+    economy:  { changes: '$200 change fee', refund: 'Non-refundable'       },
+    business: { changes: '$75 change fee',  refund: 'Cancel for credit'    },
+    first:    { changes: 'Change for free', refund: 'Refundable'           },
+  },
+  DL: {
+    economy:  { changes: '$200 change fee', refund: 'Non-refundable'       },
+    business: { changes: '$75 change fee',  refund: 'Cancel for credit'    },
+    first:    { changes: 'Change for free', refund: 'Refundable'           },
+  },
+  UA: {
+    economy:  { changes: '$200 change fee', refund: 'Non-refundable'       },
+    business: { changes: '$75 change fee',  refund: 'Cancel for credit'    },
+    first:    { changes: 'Change for free', refund: 'Refundable'           },
+  },
+}
 const DEFAULT_RULES: Record<'economy'|'business'|'first', FareRule> = {
   economy:  { changes: '$200 change fee', refund: 'Non-refundable' },
   business: { changes: '$150 change fee', refund: 'Non-refundable' },
   first:    { changes: '$75 change fee',  refund: 'Non-refundable' },
 }
 function fareRule(code: string, cabin: 'economy'|'business'|'first'): FareRule {
-  return (AIRLINE_RULES[code] ?? DEFAULT_RULES)[cabin]
+  return (AIRLINE_RULES[code]?.[cabin]) ?? DEFAULT_RULES[cabin]
 }
 
 // ── Terminal (deterministic pseudo-random from flight id) ───────────────────
