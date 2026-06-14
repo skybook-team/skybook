@@ -9,6 +9,7 @@ import {
   formatDuration,
   formatPrice,
   getPriceForClass,
+  AIRPORT_TZ,
   type Flight,
   type Passenger,
   type PendingBooking,
@@ -162,9 +163,9 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
             </span>
             <span className="font-medium text-gray-900">{flight.origin.code} → {flight.destination.code}</span>
             <span className="text-gray-400">·</span>
-            <span>{formatDate(flight.departureTime)}</span>
+            <span>{formatDate(flight.departureTime, AIRPORT_TZ[flight.origin.code])}</span>
             <span className="text-gray-400">·</span>
-            <span>{formatTime(flight.departureTime)} – {formatTime(flight.arrivalTime)}</span>
+            <span>{formatTime(flight.departureTime, AIRPORT_TZ[flight.origin.code])} – {formatTime(flight.arrivalTime, AIRPORT_TZ[flight.destination.code])}</span>
             <span className="text-gray-400">·</span>
             <span className="capitalize">{cabinClass}</span>
             <span className="text-gray-400">·</span>
@@ -484,7 +485,7 @@ function FlightMini({ flight, cabinClass, label }: { flight: Flight; cabinClass:
       </div>
       <div className="flex items-center gap-2">
         <div className="text-center">
-          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.departureTime)}</p>
+          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.departureTime, AIRPORT_TZ[flight.origin.code])}</p>
           <p className="text-xs font-bold text-gray-500 mt-0.5">{flight.origin.code}</p>
         </div>
         <div className="flex-1 text-center">
@@ -501,13 +502,13 @@ function FlightMini({ flight, cabinClass, label }: { flight: Flight; cabinClass:
           </p>
         </div>
         <div className="text-center">
-          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.arrivalTime)}</p>
+          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.arrivalTime, AIRPORT_TZ[flight.destination.code])}</p>
           <p className="text-xs font-bold text-gray-500 mt-0.5">{flight.destination.code}</p>
         </div>
       </div>
       <div className="mt-2.5 pt-2 border-t border-gray-200 space-y-1">
         <div className="flex justify-between text-[11px]">
-          <span className="text-gray-400">{formatDate(flight.departureTime)}</span>
+          <span className="text-gray-400">{formatDate(flight.departureTime, AIRPORT_TZ[flight.origin.code])}</span>
           <span className="text-gray-500 font-medium">{flight.aircraft}</span>
         </div>
         <div className="flex justify-between text-[11px]">
