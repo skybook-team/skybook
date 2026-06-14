@@ -539,16 +539,20 @@ const S: Record<string, ScheduledFlight[]> = {
     { code: 'AA', num: 1153, dep: '12:36', dur: 394, ac: 'Airbus A321',      fare:  92, stops: 1, via: 'DFW' },
     { code: 'AA', num: 1789, dep: '13:17', dur: 446, ac: 'Boeing 737-800',   fare:  89, stops: 1, via: 'DFW' },
     { code: 'AA', num: 2077, dep: '14:03', dur: 442, ac: 'Airbus A321',      fare:  88, stops: 1, via: 'CLT' },
-    { code: 'AA', num: 3841, dep: '07:15', dur: 468, ac: 'Boeing 737-800',   fare:  91, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 2509, dep: '09:50', dur: 412, ac: 'Airbus A319',      fare:  89, stops: 1, via: 'PHX' },
-    { code: 'AA', num:  683, dep: '11:10', dur: 455, ac: 'Boeing 737-800',   fare:  93, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 1047, dep: '15:20', dur: 478, ac: 'Airbus A321',      fare:  94, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 3317, dep: '16:45', dur: 502, ac: 'Boeing 737-800',   fare:  90, stops: 1, via: 'ORD' },
-    { code: 'AA', num:  897, dep: '08:30', dur: 387, ac: 'Airbus A321',      fare:  96, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 2713, dep: '11:30', dur: 410, ac: 'Boeing 737-800',   fare:  94, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 1561, dep: '17:55', dur: 435, ac: 'Boeing 737-800',   fare:  92, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 2403, dep: '05:45', dur: 530, ac: 'Airbus A319',      fare:  88, stops: 1, via: 'CLT' },
-    { code: 'AA', num:  735, dep: '18:40', dur: 465, ac: 'Airbus A321',      fare:  91, stops: 1, via: 'CLT' },
+    // via PHX: SFO+PHX both UTC-7, BNA CDT UTC-5 → BNA arr = dep_PDT + 2h + dur
+    { code: 'AA', num: 3841, dep: '07:15', dur: 385, ac: 'Boeing 737-800',   fare:  91, stops: 1, via: 'PHX' },  // BNA 3:40 PM
+    { code: 'AA', num: 2509, dep: '09:50', dur: 360, ac: 'Airbus A319',      fare:  89, stops: 1, via: 'PHX' },  // BNA 5:50 PM
+    { code: 'AA', num:  683, dep: '11:10', dur: 350, ac: 'Boeing 737-800',   fare:  93, stops: 1, via: 'PHX' },  // BNA 7:00 PM
+    { code: 'AA', num: 1047, dep: '15:20', dur: 305, ac: 'Airbus A321',      fare:  94, stops: 1, via: 'PHX' },  // BNA 10:25 PM
+    // via ORD: SFO UTC-7, ORD+BNA CDT UTC-5 → BNA arr = dep_PDT + 2h + dur
+    { code: 'AA', num: 3317, dep: '10:00', dur: 420, ac: 'Boeing 737-800',   fare:  90, stops: 1, via: 'ORD' },  // BNA 7:00 PM
+    // via LAX: SFO+LAX both UTC-7, BNA CDT UTC-5 → BNA arr = dep_PDT + 2h + dur
+    { code: 'AA', num:  897, dep: '08:30', dur: 387, ac: 'Airbus A321',      fare:  96, stops: 1, via: 'LAX' },  // BNA 4:57 PM
+    { code: 'AA', num: 2713, dep: '11:30', dur: 410, ac: 'Boeing 737-800',   fare:  94, stops: 1, via: 'LAX' },  // BNA 8:20 PM
+    { code: 'AA', num: 1561, dep: '08:00', dur: 390, ac: 'Boeing 737-800',   fare:  92, stops: 1, via: 'LAX' },  // BNA 4:30 PM
+    // via CLT: SFO UTC-7, CLT EDT UTC-4, BNA CDT UTC-5 → BNA arr = dep_PDT + 2h + dur
+    { code: 'AA', num: 2403, dep: '05:45', dur: 480, ac: 'Airbus A319',      fare:  88, stops: 1, via: 'CLT' },  // BNA 3:45 PM
+    { code: 'AA', num:  735, dep: '07:30', dur: 470, ac: 'Airbus A321',      fare:  91, stops: 1, via: 'CLT' },  // BNA 5:20 PM
     { code: 'DL', num: 2809, dep: '09:20', dur: 425, ac: 'Airbus A220-300',  fare:  89, stops: 1, via: 'SLC' },
     { code: 'DL', num: 3471, dep: '13:20', dur: 467, ac: 'Boeing 737-900',   fare:  87, stops: 1, via: 'ATL' },
     { code: 'UA', num: 1497, dep: '05:00', dur: 422, ac: 'Boeing 737-900',   fare:  84, stops: 1, via: 'IAH' },
