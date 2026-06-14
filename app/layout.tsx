@@ -12,20 +12,20 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "SkyBook Fare — Find & Book Cheap Flights",
+  title: "SkyBookFare — Find & Book Cheap Flights",
   description: "Search and compare cheap flights across all major US airlines. Book flights with no booking fees, real prices, and free cancellation on select fares.",
-  keywords: ["cheap flights", "flight search", "book flights", "airline tickets", "flight deals", "SkyBook Fare", "skybookfare"],
+  keywords: ["cheap flights", "flight search", "book flights", "airline tickets", "flight deals", "SkyBookFare", "skybookfare"],
   metadataBase: new URL("https://skybookfare.com"),
   openGraph: {
-    title: "SkyBook Fare — Find & Book Cheap Flights",
+    title: "SkyBookFare — Find & Book Cheap Flights",
     description: "Search and compare cheap flights across all major US airlines. No booking fees, real prices.",
     type: "website",
-    siteName: "SkyBook Fare",
+    siteName: "SkyBookFare",
     url: "https://skybookfare.com",
   },
   twitter: {
     card: "summary_large_image",
-    title: "SkyBook Fare — Find & Book Cheap Flights",
+    title: "SkyBookFare — Find & Book Cheap Flights",
     description: "Compare flights across all major US airlines. Book with no fees.",
   },
   robots: { index: true, follow: true },
@@ -48,7 +48,7 @@ export default function RootLayout({
           {
             "@context": "https://schema.org",
             "@type": "Organization",
-            "name": "SkyBook Fare",
+            "name": "SkyBookFare",
             "url": "https://skybookfare.com",
             "logo": "https://skybookfare.com/logo.png",
             "description": "Search and compare cheap flights across all major US airlines. No booking fees, real prices.",
@@ -64,7 +64,7 @@ export default function RootLayout({
           {
             "@context": "https://schema.org",
             "@type": "WebSite",
-            "name": "SkyBook Fare",
+            "name": "SkyBookFare",
             "url": "https://skybookfare.com",
             "potentialAction": {
               "@type": "SearchAction",

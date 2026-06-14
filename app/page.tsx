@@ -9,28 +9,28 @@ const FAQ_SCHEMA = {
   "mainEntity": [
     {
       "@type": "Question",
-      "name": "Does SkyBook Fare charge booking fees?",
-      "acceptedAnswer": { "@type": "Answer", "text": "No. SkyBook Fare charges zero booking fees. The price you see includes all taxes and carrier fees — nothing is added at checkout." }
+      "name": "Does SkyBookFare charge booking fees?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. SkyBookFare charges zero booking fees. The price you see includes all taxes and carrier fees — nothing is added at checkout." }
     },
     {
       "@type": "Question",
-      "name": "How do I find cheap flights on SkyBook Fare?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Enter your origin, destination, and travel dates on the homepage. SkyBook Fare searches all major US airlines including American, Delta, United, Southwest, JetBlue, and Alaska to find the lowest fares." }
+      "name": "How do I find cheap flights on SkyBookFare?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Enter your origin, destination, and travel dates on the homepage. SkyBookFare searches all major US airlines including American, Delta, United, Southwest, JetBlue, and Alaska to find the lowest fares." }
     },
     {
       "@type": "Question",
-      "name": "Can I book round-trip flights on SkyBook Fare?",
+      "name": "Can I book round-trip flights on SkyBookFare?",
       "acceptedAnswer": { "@type": "Answer", "text": "Yes. Select 'Round Trip' on the search form, enter your outbound and return dates, and the total round-trip price is shown upfront on every flight result." }
     },
     {
       "@type": "Question",
-      "name": "Which airlines does SkyBook Fare search?",
-      "acceptedAnswer": { "@type": "Answer", "text": "SkyBook Fare searches American Airlines, Delta, United, Southwest, JetBlue, Alaska Airlines, Frontier, and Spirit across 150+ US airports." }
+      "name": "Which airlines does SkyBookFare search?",
+      "acceptedAnswer": { "@type": "Answer", "text": "SkyBookFare searches American Airlines, Delta, United, Southwest, JetBlue, Alaska Airlines, Frontier, and Spirit across 150+ US airports." }
     },
     {
       "@type": "Question",
-      "name": "Is SkyBook Fare secure?",
-      "acceptedAnswer": { "@type": "Answer", "text": "Yes. SkyBook Fare uses 256-bit SSL encryption, is PCI DSS Level 1 certified, and SOC 2 Type II attested. Your payment data is never stored on our servers." }
+      "name": "Is SkyBookFare secure?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes. SkyBookFare uses 256-bit SSL encryption, is PCI DSS Level 1 certified, and SOC 2 Type II attested. Your payment data is never stored on our servers." }
     },
   ]
 }

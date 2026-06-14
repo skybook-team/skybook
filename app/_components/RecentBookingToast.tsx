@@ -80,7 +80,7 @@ export default function RecentBookingToast() {
             just booked a flight to <span className="font-semibold text-gray-700">{booking.to}</span> for{' '}
             <span className="font-black text-blue-600">${booking.price}</span>
           </p>
-          <p className="text-[10px] text-gray-400 mt-1">{booking.ago} min ago · via SkyBook Fare</p>
+          <p className="text-[10px] text-gray-400 mt-1">{booking.ago} min ago · via SkyBookFare</p>
         </div>
 
         {/* Dismiss */}

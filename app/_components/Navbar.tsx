@@ -19,7 +19,7 @@ export default function Navbar() {
               </svg>
             </div>
             <span className="text-xl font-black text-gray-900 tracking-tight">
-              sky<span className="text-blue-600">book</span>
+              sky<span className="text-blue-600">book</span>fare
             </span>
           </Link>
 
