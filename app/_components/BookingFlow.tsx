@@ -173,44 +173,67 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
             )}
           </div>
 
-          {/* Price summary sidebar */}
+          {/* Itinerary + Price sidebar */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-xl border border-gray-200 p-4 sticky top-24">
-              <h3 className="font-semibold text-gray-900 mb-3 text-sm">Price Summary</h3>
-              <div className="space-y-1.5 text-sm">
-                <div className="text-xs text-gray-500 mb-2">
+            <div className="bg-white rounded-xl border border-gray-200 sticky top-24 overflow-hidden">
+
+              {/* Header */}
+              <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-4 py-3">
+                <p className="text-white font-bold text-sm">Your Itinerary</p>
+                <p className="text-blue-200 text-xs mt-0.5">
                   {returnFlight ? 'Round Trip' : 'One Way'} · {passengerCount} {passengerCount === 1 ? 'Passenger' : 'Passengers'} · <span className="capitalize">{cabinClass}</span>
-                </div>
-                {seatAddonCost > 0 && (
-                  <div className="flex justify-between text-gray-600 text-xs">
-                    <span>Seat selection</span>
-                    <span>+${formatPrice(seatAddonCost)}</span>
+                </p>
+              </div>
+
+              <div className="p-4 space-y-4">
+
+                {/* Outbound leg */}
+                <FlightMini flight={flight} cabinClass={cabinClass} label="Outbound" />
+
+                {/* Return leg */}
+                {returnFlight && (
+                  <FlightMini flight={returnFlight} cabinClass={cabinClass} label="Return" />
+                )}
+
+                {/* Selected seats */}
+                {selectedSeats.length > 0 && (
+                  <div className="bg-blue-50 rounded-lg px-3 py-2">
+                    <p className="text-[10px] font-bold text-blue-600 uppercase tracking-wide mb-1">Selected Seats</p>
+                    <p className="text-sm font-semibold text-gray-800">{selectedSeats.join(', ')}</p>
                   </div>
                 )}
-                <div className="border-t border-gray-100 pt-2 flex justify-between font-bold text-gray-900">
-                  <span>Total</span>
-                  <span className="text-blue-600">${formatPrice(totalPrice)}</span>
+
+                {/* Price breakdown */}
+                <div className="border-t border-gray-100 pt-3 space-y-2">
+                  <p className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-2">Price Breakdown</p>
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Base fare × {passengerCount}</span>
+                    <span>${formatPrice(baseFare)}</span>
+                  </div>
+                  <div className="flex justify-between text-xs text-gray-600">
+                    <span>Taxes &amp; fees (14%)</span>
+                    <span>${formatPrice(taxes)}</span>
+                  </div>
+                  {seatAddonCost > 0 && (
+                    <div className="flex justify-between text-xs text-gray-600">
+                      <span>Seat selection</span>
+                      <span>+${formatPrice(seatAddonCost)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-bold text-gray-900 border-t border-gray-200 pt-2 mt-1">
+                    <span className="text-sm">Total</span>
+                    <span className="text-blue-600 text-base">${formatPrice(totalPrice)}</span>
+                  </div>
+                </div>
+
+                {/* Trust note */}
+                <div className="flex items-center gap-1.5 text-[10px] text-gray-400">
+                  <svg className="w-3 h-3 text-green-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                  </svg>
+                  Secure booking · No hidden fees
                 </div>
               </div>
-
-              {/* Flight mini-cards */}
-              <div className="mt-4 pt-4 border-t border-gray-100">
-                <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Outbound</p>
-                <FlightMini flight={flight} />
-                {returnFlight && (
-                  <>
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mt-3 mb-2">Return</p>
-                    <FlightMini flight={returnFlight} />
-                  </>
-                )}
-              </div>
-
-              {selectedSeats.length > 0 && (
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <p className="text-xs text-gray-500 mb-1">Selected seats</p>
-                  <p className="text-sm font-medium text-gray-700">{selectedSeats.join(', ')}</p>
-                </div>
-              )}
             </div>
           </div>
         </div>
@@ -219,17 +242,64 @@ export default function BookingFlow({ flightId }: { flightId: string }) {
   )
 }
 
-function FlightMini({ flight }: { flight: Flight }) {
+function FlightMini({ flight, cabinClass, label }: { flight: Flight; cabinClass: 'economy'|'business'|'first'; label: string }) {
   return (
-    <div className="flex items-center gap-2 text-xs text-gray-600">
-      <div className="w-6 h-6 rounded flex items-center justify-center text-white font-bold text-xs shrink-0"
-        style={{ backgroundColor: flight.airline.color }}>
-        {flight.airline.code}
+    <div className="bg-gray-50 rounded-xl p-3 border border-gray-100">
+      {/* Label + airline */}
+      <div className="flex items-center justify-between mb-2.5">
+        <span className="text-[10px] font-bold text-blue-600 uppercase tracking-wide">{label}</span>
+        <div className="flex items-center gap-1.5">
+          <div className="w-5 h-5 rounded flex items-center justify-center text-white font-bold text-[9px] shrink-0"
+            style={{ backgroundColor: flight.airline.color }}>
+            {flight.airline.code}
+          </div>
+          <span className="text-[11px] font-semibold text-gray-700">{flight.flightNumber}</span>
+        </div>
       </div>
-      <span className="font-medium">{flight.origin.code} → {flight.destination.code}</span>
-      <span className="text-gray-400">{formatTime(flight.departureTime)}</span>
-      <span className="text-gray-300">·</span>
-      <span className="text-gray-400">{formatDuration(flight.durationMinutes)}</span>
+
+      {/* Times row */}
+      <div className="flex items-center gap-2">
+        <div className="text-center">
+          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.departureTime)}</p>
+          <p className="text-xs font-bold text-gray-500 mt-0.5">{flight.origin.code}</p>
+        </div>
+
+        <div className="flex-1 text-center">
+          <p className="text-[10px] text-gray-400">{formatDuration(flight.durationMinutes)}</p>
+          <div className="flex items-center my-0.5">
+            <div className="flex-1 h-px bg-gray-300" />
+            {flight.stops > 0 && <div className="w-1.5 h-1.5 rounded-full border border-gray-400 bg-white shrink-0 mx-0.5" />}
+            <svg className="w-3 h-3 text-gray-400 shrink-0" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+          </div>
+          <p className="text-[10px] text-gray-400">
+            {flight.stops === 0 ? <span className="text-green-600 font-medium">Nonstop</span> : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}${flight.stopCity ? ` · ${flight.stopCity}` : ''}`}
+          </p>
+        </div>
+
+        <div className="text-center">
+          <p className="text-base font-black text-gray-900 leading-none">{formatTime(flight.arrivalTime)}</p>
+          <p className="text-xs font-bold text-gray-500 mt-0.5">{flight.destination.code}</p>
+        </div>
+      </div>
+
+      {/* Details row */}
+      <div className="mt-2.5 pt-2 border-t border-gray-200 space-y-1">
+        <div className="flex justify-between text-[11px]">
+          <span className="text-gray-400">{formatDate(flight.departureTime)}</span>
+          <span className="text-gray-500 font-medium">{flight.aircraft}</span>
+        </div>
+        <div className="flex justify-between text-[11px]">
+          <span className={flight.carryOnIncluded ? 'text-green-600 font-medium' : 'text-gray-400'}>
+            {flight.carryOnIncluded ? '✓ Carry-on' : '✗ Carry-on'}
+          </span>
+          <span className={flight.checkedBagPrice === null ? 'text-green-600 font-medium' : 'text-gray-400'}>
+            {flight.checkedBagPrice === null ? '✓ 1st bag free' : `Bag +$${flight.checkedBagPrice}`}
+          </span>
+        </div>
+        <div className="text-[11px] text-gray-400 capitalize">{cabinClass} · {getPriceForClass(flight, cabinClass) ? `$${formatPrice(getPriceForClass(flight, cabinClass))} / person` : ''}</div>
+      </div>
     </div>
   )
 }
