@@ -1,7 +1,7 @@
 'use client'
 import { useEffect } from 'react'
 
-const PUBLISHER_ID = 'ca-pub-XXXXXXXXXXXXXXXXX' // ← replace with your AdSense publisher ID
+const PUBLISHER_ID = 'ca-pub-6813946412691851'
 
 export default function AdUnit({ slot, format = 'auto' }: { slot: string; format?: string }) {
   useEffect(() => {
