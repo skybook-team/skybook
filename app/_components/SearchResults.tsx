@@ -1,13 +1,35 @@
 'use client'
 
 import { useState, useMemo, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import {
   generateFlights, formatTime, formatDate, formatDuration, formatTZAbbr, formatPrice,
   getPriceForClass, fareName, AIRPORTS, AIRLINES, AIRPORT_TZ,
-  type Flight, type SearchParams, type MultiCityLeg,
+  type Flight, type MultiCityLeg,
 } from '@/lib/data'
-import { setPendingBooking } from '@/lib/store'
+
+// ── Kayak affiliate redirect ──────────────────────────────────────────────────
+function buildKayakUrl(
+  outbound: Flight,
+  ret?: Flight | null,
+  multiLegs?: Flight[],
+  passengers = 1,
+  cabinClass = 'economy',
+): string {
+  const base   = 'https://www.kayak.com/flights'
+  const pax    = `${passengers}adults`
+  const cabin  = cabinClass === 'business' ? 'business' : cabinClass === 'first' ? 'first' : 'economy'
+
+  if (multiLegs && multiLegs.length > 0) {
+    const legs = multiLegs.map(f => `${f.origin.code}-${f.destination.code}/${f.departureTime.split('T')[0]}`).join('/')
+    return `${base}/${legs}/${pax}?cabin=${cabin}&sort=bestflight_a`
+  }
+  const outDate = outbound.departureTime.split('T')[0]
+  if (ret) {
+    const retDate = ret.departureTime.split('T')[0]
+    return `${base}/${outbound.origin.code}-${outbound.destination.code}/${outDate}/${ret.origin.code}-${ret.destination.code}/${retDate}/${pax}?cabin=${cabin}&sort=bestflight_a`
+  }
+  return `${base}/${outbound.origin.code}-${outbound.destination.code}/${outDate}/${pax}?cabin=${cabin}&sort=bestflight_a`
+}
 
 interface Props {
   from: string; to: string; date: string; returnDate?: string
@@ -76,7 +98,6 @@ async function fetchFlights(
 // ── Main component ─────────────────────────────────────────────────────────
 
 export default function SearchResults({ from, to, date, returnDate, passengers, cabinClass, tripType, legs }: Props) {
-  const router = useRouter()
 
   const [outboundFlights,  setOutboundFlights]  = useState<Flight[]>([])
   const [returnFlights,    setReturnFlights]     = useState<Flight[]>([])
@@ -180,9 +201,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
   )
 
   function selectFlight(outbound: Flight, ret?: Flight) {
-    const id = crypto.randomUUID()
-    setPendingBooking({ id, outboundFlight: outbound, returnFlight: ret, searchParams: { from, to, date, returnDate, passengers, cabinClass, tripType, legs } as SearchParams })
-    router.push(`/booking/${id}`)
+    window.open(buildKayakUrl(outbound, ret, undefined, passengers, cabinClass), '_blank', 'noopener,noreferrer')
   }
 
   function selectMcFlight(flight: Flight) {
@@ -191,16 +210,7 @@ export default function SearchResults({ from, to, date, returnDate, passengers, 
       setMcSelected(newSelected)
       setMcCurrentLeg(mcCurrentLeg + 1)
     } else {
-      // All legs selected — book
-      const id = crypto.randomUUID()
-      const [first, ...rest] = newSelected
-      setPendingBooking({
-        id,
-        outboundFlight: first,
-        multiCityFlights: newSelected,
-        searchParams: { from: legs![0].from, to: legs![legs!.length - 1].to, date: legs![0].date, passengers, cabinClass, tripType: 'multicity', legs } as SearchParams,
-      })
-      router.push(`/booking/${id}`)
+      window.open(buildKayakUrl(newSelected[0], null, newSelected, passengers, cabinClass), '_blank', 'noopener,noreferrer')
     }
   }
 
@@ -454,6 +464,13 @@ function FlightList({ flights, cabinClass, passengers, sort, onSortChange, onSel
         )}
       </div>
 
+      {!loading && flights.length > 0 && (
+        <div className="mb-3 flex items-center gap-2 text-xs text-gray-400 bg-gray-50 border border-gray-100 rounded-xl px-3 py-2">
+          <svg className="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          Clicking &quot;Book on Kayak&quot; opens Kayak.com in a new tab to complete your booking. SkyBook may earn a commission at no extra cost to you.
+        </div>
+      )}
+
       {loading ? (
         <div className="space-y-3">{[...Array(5)].map((_,i) => <SkeletonCard key={i} />)}</div>
       ) : flights.length === 0 ? (
@@ -639,8 +656,13 @@ function FlightCard({ flight, cabinClass, passengers, onSelect, isCheapest, outb
               <p className="text-xs text-red-500 font-semibold mb-1">{classData.seatsLeft} left!</p>
             )}
             <button onClick={() => onSelect(flight)}
-              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors w-full shadow-sm">
-              {outboundPrice !== undefined ? 'Book trip' : minReturnPrice !== undefined ? 'Select outbound' : 'Select'}
+              className="bg-blue-600 hover:bg-blue-700 active:bg-blue-800 text-white font-bold px-5 py-2 rounded-xl text-sm transition-colors w-full shadow-sm flex items-center justify-center gap-1.5">
+              {outboundPrice !== undefined
+                ? <>Book on Kayak <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></>
+                : minReturnPrice !== undefined
+                  ? 'Select outbound'
+                  : <>Book on Kayak <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg></>
+              }
             </button>
           </div>
         </div>
