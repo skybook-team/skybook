@@ -13,8 +13,6 @@ export default function AdUnit({ slot, format = 'auto' }: { slot: string; format
     } catch {}
   }, [])
 
-  if (PUBLISHER_ID === 'ca-pub-XXXXXXXXXXXXXXXXX') return null
-
   return (
     <ins
       className="adsbygoogle"
