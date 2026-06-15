@@ -300,6 +300,50 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ── Popular Routes ── */}
+      <section className="bg-white border-t border-gray-100 py-14">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-black text-gray-900">Popular Routes</h2>
+              <p className="text-gray-500 text-sm mt-1">Browse flights on the most searched US routes</p>
+            </div>
+            <Link href="/flights" className="text-sm font-semibold text-blue-600 hover:underline hidden sm:block">
+              View all routes →
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+            {[
+              ['JFK','LAX','New York','Los Angeles',178],
+              ['LAX','SFO','Los Angeles','San Francisco',79],
+              ['SFO','BNA','San Francisco','Nashville',139],
+              ['JFK','MIA','New York','Miami',109],
+              ['ORD','LAX','Chicago','Los Angeles',149],
+              ['ATL','ORD','Atlanta','Chicago',109],
+              ['SFO','SEA','San Francisco','Seattle',89],
+              ['DFW','BNA','Dallas','Nashville',119],
+              ['LAX','LAS','Los Angeles','Las Vegas',59],
+              ['JFK','BOS','New York','Boston',79],
+              ['BNA','LAX','Nashville','Los Angeles',149],
+              ['ORD','MIA','Chicago','Miami',138],
+            ].map(([from, to, fc, tc, price]) => (
+              <Link key={`${from}-${to}`}
+                href={`/flights/${(from as string).toLowerCase()}-to-${(to as string).toLowerCase()}`}
+                className="bg-gray-50 hover:bg-blue-50 border border-gray-200 hover:border-blue-300 rounded-xl p-3.5 transition-all group">
+                <p className="font-black text-gray-900 text-sm">{from} → {to}</p>
+                <p className="text-[11px] text-gray-400 mt-0.5 truncate">{fc} to {tc}</p>
+                <p className="text-blue-600 font-bold text-sm mt-2">From ${price}</p>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4 text-center sm:hidden">
+            <Link href="/flights" className="text-sm font-semibold text-blue-600 hover:underline">
+              View all routes →
+            </Link>
+          </div>
+        </div>
+      </section>
+
     </div>
   )
 }
