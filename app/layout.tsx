@@ -30,6 +30,7 @@ export const metadata: Metadata = {
   },
   robots: { index: true, follow: true },
   verification: { google: 'Oc2hn6VGpPjZIKFFe5NXMSM5umF3tkQpM90WZGAWXwU' },
+  other: { 'google-adsense-account': 'ca-pub-6813946412691851' },
 };
 
 export default function RootLayout({
