@@ -1,5 +1,6 @@
 import SearchResults from '@/app/_components/SearchResults'
 import SearchForm from '@/app/_components/SearchForm'
+import AdUnit from '@/app/_components/AdUnit'
 import type { MultiCityLeg } from '@/lib/data'
 
 function parseLegs(legsParam: string | undefined): MultiCityLeg[] | undefined {
@@ -34,6 +35,11 @@ export default async function SearchPage({
             defaultValues={{ from, to, date, returnDate, passengers: Number(passengers) || 1, cabinClass, tripType, legs }}
           />
         </div>
+      </div>
+
+      {/* Ad banner below search bar */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+        <AdUnit slot="1234567890" format="horizontal" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
