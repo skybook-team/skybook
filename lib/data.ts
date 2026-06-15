@@ -391,14 +391,14 @@ function getBaseDuration(from: string, to: string): number {
 
 export function getBasePrice(durationMinutes: number, airlineCode: string): number {
   let base: number
-  if      (durationMinutes < 90)  base = 42
-  else if (durationMinutes < 150) base = 59
-  else if (durationMinutes < 240) base = 82
-  else if (durationMinutes < 360) base = 119
-  else if (durationMinutes < 480) base = 145
-  else if (durationMinutes < 600) base = 165
-  else if (durationMinutes < 720) base = 185
-  else                            base = 215
+  if      (durationMinutes < 90)  base = 59
+  else if (durationMinutes < 150) base = 89
+  else if (durationMinutes < 240) base = 119
+  else if (durationMinutes < 360) base = 149
+  else if (durationMinutes < 480) base = 169
+  else if (durationMinutes < 600) base = 189
+  else if (durationMinutes < 720) base = 209
+  else                            base = 239
   return Math.round(base * (AIRLINE_PRICE_FACTOR[airlineCode] ?? 1.0))
 }
 

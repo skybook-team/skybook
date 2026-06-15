@@ -524,87 +524,87 @@ const S: Record<string, ScheduledFlight[]> = {
   // AA, DL, F9 are connecting only. AS and B6 do not serve BNA from SFO.
   'SFO-BNA': [
     // ── Nonstop ──────────────────────────────────────────────────────────
-    { code: 'UA', num:  499, dep: '09:15', dur: 276, ac: 'Boeing 737-800',   fare: 299 },
-    { code: 'UA', num: 2281, dep: '16:30', dur: 260, ac: 'Airbus A319',      fare: 319, days:[0,5] },
-    { code: 'UA', num: 1815, dep: '23:59', dur: 278, ac: 'Boeing 737 MAX 9', fare: 279 },
-    { code: 'UA', num: 1401, dep: '22:57', dur: 257, ac: 'Boeing 737 MAX 8', fare: 269, days:[0,5] },
-    { code: 'WN', num:  528, dep: '10:35', dur: 250, ac: 'Boeing 737-800',   fare: 259, days:[1,4,5] },
-    { code: 'WN', num: 1172, dep: '10:05', dur: 245, ac: 'Boeing 737-700',   fare: 249, days:[0,5] },
-    { code: 'WN', num: 1172, dep: '08:10', dur: 250, ac: 'Boeing 737 MAX 8', fare: 239, days:[6] },
-    { code: 'WN', num: 3634, dep: '22:50', dur: 255, ac: 'Boeing 737-700',   fare: 249 },
-    { code: 'WN', num: 1683, dep: '23:05', dur: 265, ac: 'Boeing 737 MAX 8', fare: 259, days:[1,2,3,4,5,6] },
+    { code: 'UA', num:  499, dep: '09:15', dur: 276, ac: 'Boeing 737-800',   fare: 169 },
+    { code: 'UA', num: 2281, dep: '16:30', dur: 260, ac: 'Airbus A319',      fare: 179, days:[0,5] },
+    { code: 'UA', num: 1815, dep: '23:59', dur: 278, ac: 'Boeing 737 MAX 9', fare: 159 },
+    { code: 'UA', num: 1401, dep: '22:57', dur: 257, ac: 'Boeing 737 MAX 8', fare: 149, days:[0,5] },
+    { code: 'WN', num:  528, dep: '10:35', dur: 250, ac: 'Boeing 737-800',   fare: 149, days:[1,4,5] },
+    { code: 'WN', num: 1172, dep: '10:05', dur: 245, ac: 'Boeing 737-700',   fare: 139, days:[0,5] },
+    { code: 'WN', num: 1172, dep: '08:10', dur: 250, ac: 'Boeing 737 MAX 8', fare: 135, days:[6] },
+    { code: 'WN', num: 3634, dep: '22:50', dur: 255, ac: 'Boeing 737-700',   fare: 139 },
+    { code: 'WN', num: 1683, dep: '23:05', dur: 265, ac: 'Boeing 737 MAX 8', fare: 145, days:[1,2,3,4,5,6] },
     // ── 1-stop ────────────────────────────────────────────────────────────
-    { code: 'AA', num: 2228, dep: '23:29', dur: 453, ac: 'Boeing 737-800',   fare: 269, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 2251, dep: '06:45', dur: 541, ac: 'Boeing 737-800',   fare: 249, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 1153, dep: '12:36', dur: 394, ac: 'Airbus A321',      fare: 279, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 1789, dep: '13:17', dur: 446, ac: 'Boeing 737-800',   fare: 259, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 2077, dep: '14:03', dur: 442, ac: 'Airbus A321',      fare: 269, stops: 1, via: 'CLT' },
+    { code: 'AA', num: 2228, dep: '23:29', dur: 453, ac: 'Boeing 737-800',   fare: 139, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 2251, dep: '06:45', dur: 541, ac: 'Boeing 737-800',   fare: 129, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 1153, dep: '12:36', dur: 394, ac: 'Airbus A321',      fare: 149, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 1789, dep: '13:17', dur: 446, ac: 'Boeing 737-800',   fare: 139, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 2077, dep: '14:03', dur: 442, ac: 'Airbus A321',      fare: 145, stops: 1, via: 'CLT' },
     // via PHX
-    { code: 'AA', num: 3841, dep: '07:15', dur: 385, ac: 'Boeing 737-800',   fare: 279, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 2509, dep: '09:50', dur: 360, ac: 'Airbus A319',      fare: 269, stops: 1, via: 'PHX' },
-    { code: 'AA', num:  683, dep: '11:10', dur: 350, ac: 'Boeing 737-800',   fare: 289, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 1047, dep: '15:20', dur: 305, ac: 'Airbus A321',      fare: 299, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 3841, dep: '07:15', dur: 385, ac: 'Boeing 737-800',   fare: 149, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 2509, dep: '09:50', dur: 360, ac: 'Airbus A319',      fare: 139, stops: 1, via: 'PHX' },
+    { code: 'AA', num:  683, dep: '11:10', dur: 350, ac: 'Boeing 737-800',   fare: 149, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 1047, dep: '15:20', dur: 305, ac: 'Airbus A321',      fare: 155, stops: 1, via: 'PHX' },
     // via ORD
-    { code: 'AA', num: 3317, dep: '10:00', dur: 420, ac: 'Boeing 737-800',   fare: 259, stops: 1, via: 'ORD' },
+    { code: 'AA', num: 3317, dep: '10:00', dur: 420, ac: 'Boeing 737-800',   fare: 135, stops: 1, via: 'ORD' },
     // via LAX
-    { code: 'AA', num:  897, dep: '08:30', dur: 387, ac: 'Airbus A321',      fare: 289, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 2713, dep: '11:30', dur: 410, ac: 'Boeing 737-800',   fare: 279, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 1561, dep: '08:00', dur: 390, ac: 'Boeing 737-800',   fare: 269, stops: 1, via: 'LAX' },
+    { code: 'AA', num:  897, dep: '08:30', dur: 387, ac: 'Airbus A321',      fare: 149, stops: 1, via: 'LAX' },
+    { code: 'AA', num: 2713, dep: '11:30', dur: 410, ac: 'Boeing 737-800',   fare: 145, stops: 1, via: 'LAX' },
+    { code: 'AA', num: 1561, dep: '08:00', dur: 390, ac: 'Boeing 737-800',   fare: 139, stops: 1, via: 'LAX' },
     // via CLT
-    { code: 'AA', num: 2403, dep: '05:45', dur: 480, ac: 'Airbus A319',      fare: 249, stops: 1, via: 'CLT' },
-    { code: 'AA', num:  735, dep: '07:30', dur: 470, ac: 'Airbus A321',      fare: 259, stops: 1, via: 'CLT' },
-    { code: 'DL', num: 2809, dep: '09:20', dur: 425, ac: 'Airbus A220-300',  fare: 269, stops: 1, via: 'SLC' },
-    { code: 'DL', num: 3471, dep: '13:20', dur: 467, ac: 'Boeing 737-900',   fare: 259, stops: 1, via: 'ATL' },
-    { code: 'UA', num: 1497, dep: '05:00', dur: 422, ac: 'Boeing 737-900',   fare: 249, stops: 1, via: 'IAH' },
-    { code: 'UA', num: 1631, dep: '12:15', dur: 507, ac: 'Airbus A320neo',   fare: 239, stops: 1, via: 'DEN' },
-    { code: 'WN', num: 4721, dep: '06:05', dur: 590, ac: 'Boeing 737-800',   fare: 219, stops: 1, via: 'PHX' },
-    { code: 'WN', num: 3817, dep: '11:00', dur: 625, ac: 'Boeing 737-800',   fare: 209, stops: 1, via: 'PHX' },
-    { code: 'WN', num: 4293, dep: '14:35', dur: 425, ac: 'Boeing 737-800',   fare: 229, stops: 1, via: 'PHX' },
-    { code: 'F9', num: 1871, dep: '21:43', dur: 701, ac: 'Airbus A320neo',   fare: 189, stops: 1, via: 'DEN' },
+    { code: 'AA', num: 2403, dep: '05:45', dur: 480, ac: 'Airbus A319',      fare: 129, stops: 1, via: 'CLT' },
+    { code: 'AA', num:  735, dep: '07:30', dur: 470, ac: 'Airbus A321',      fare: 135, stops: 1, via: 'CLT' },
+    { code: 'DL', num: 2809, dep: '09:20', dur: 425, ac: 'Airbus A220-300',  fare: 145, stops: 1, via: 'SLC' },
+    { code: 'DL', num: 3471, dep: '13:20', dur: 467, ac: 'Boeing 737-900',   fare: 139, stops: 1, via: 'ATL' },
+    { code: 'UA', num: 1497, dep: '05:00', dur: 422, ac: 'Boeing 737-900',   fare: 129, stops: 1, via: 'IAH' },
+    { code: 'UA', num: 1631, dep: '12:15', dur: 507, ac: 'Airbus A320neo',   fare: 125, stops: 1, via: 'DEN' },
+    { code: 'WN', num: 4721, dep: '06:05', dur: 590, ac: 'Boeing 737-800',   fare: 109, stops: 1, via: 'PHX' },
+    { code: 'WN', num: 3817, dep: '11:00', dur: 625, ac: 'Boeing 737-800',   fare: 105, stops: 1, via: 'PHX' },
+    { code: 'WN', num: 4293, dep: '14:35', dur: 425, ac: 'Boeing 737-800',   fare: 119, stops: 1, via: 'PHX' },
+    { code: 'F9', num: 1871, dep: '21:43', dur: 701, ac: 'Airbus A320neo',   fare:  99, stops: 1, via: 'DEN' },
   ],
   'BNA-SFO': [
     // ── Nonstop ──────────────────────────────────────────────────────────
-    { code: 'UA', num: 1578, dep: '06:10', dur: 250, ac: 'Boeing 737 MAX 8', fare: 289 },
-    { code: 'UA', num:  626, dep: '08:15', dur: 242, ac: 'Boeing 737 MAX 8', fare: 309 },
-    { code: 'UA', num: 2464, dep: '08:30', dur: 245, ac: 'Boeing 737 MAX 8', fare: 299, days:[0,4,5,6] },
-    { code: 'UA', num:  298, dep: '14:54', dur: 288, ac: 'Boeing 737-800',   fare: 319 },
-    { code: 'UA', num: 1295, dep: '18:10', dur: 251, ac: 'Boeing 737-800',   fare: 299, days:[0,1,2,3,4,5] },
-    { code: 'UA', num: 2673, dep: '18:35', dur: 241, ac: 'Boeing 737 MAX 8', fare: 289, days:[0,1,4,5] },
-    { code: 'WN', num: 1474, dep: '08:20', dur: 255, ac: 'Boeing 737 MAX 8', fare: 259, days:[6] },
-    { code: 'WN', num: 1689, dep: '08:50', dur: 295, ac: 'Boeing 737-700',   fare: 249, days:[0] },
-    { code: 'WN', num: 1330, dep: '11:45', dur: 240, ac: 'Boeing 737-800',   fare: 269, days:[0,1,2,5] },
-    { code: 'WN', num:  678, dep: '12:20', dur: 245, ac: 'Boeing 737-700',   fare: 259, days:[1,4,5] },
-    { code: 'WN', num:  647, dep: '14:45', dur: 250, ac: 'Boeing 737 MAX 8', fare: 269, days:[1,4,5] },
-    { code: 'WN', num:  647, dep: '12:50', dur: 250, ac: 'Boeing 737 MAX 8', fare: 259, days:[6] },
-    { code: 'WN', num:  673, dep: '17:15', dur: 280, ac: 'Boeing 737-800',   fare: 249, days:[1,4,5] },
-    { code: 'WN', num:  673, dep: '18:25', dur: 280, ac: 'Boeing 737-800',   fare: 239, days:[6] },
-    { code: 'WN', num:  673, dep: '13:45', dur: 280, ac: 'Boeing 737 MAX 8', fare: 249, days:[0] },
-    { code: 'WN', num:  760, dep: '19:15', dur: 275, ac: 'Boeing 737 MAX 8', fare: 259, days:[1,4,5] },
-    { code: 'WN', num: 1010, dep: '13:25', dur: 295, ac: 'Boeing 737 MAX 8', fare: 249, days:[6] },
-    { code: 'WN', num: 1010, dep: '18:30', dur: 295, ac: 'Boeing 737 MAX 8', fare: 239, days:[0] },
+    { code: 'UA', num: 1578, dep: '06:10', dur: 250, ac: 'Boeing 737 MAX 8', fare: 159 },
+    { code: 'UA', num:  626, dep: '08:15', dur: 242, ac: 'Boeing 737 MAX 8', fare: 169 },
+    { code: 'UA', num: 2464, dep: '08:30', dur: 245, ac: 'Boeing 737 MAX 8', fare: 165, days:[0,4,5,6] },
+    { code: 'UA', num:  298, dep: '14:54', dur: 288, ac: 'Boeing 737-800',   fare: 179 },
+    { code: 'UA', num: 1295, dep: '18:10', dur: 251, ac: 'Boeing 737-800',   fare: 169, days:[0,1,2,3,4,5] },
+    { code: 'UA', num: 2673, dep: '18:35', dur: 241, ac: 'Boeing 737 MAX 8', fare: 159, days:[0,1,4,5] },
+    { code: 'WN', num: 1474, dep: '08:20', dur: 255, ac: 'Boeing 737 MAX 8', fare: 145, days:[6] },
+    { code: 'WN', num: 1689, dep: '08:50', dur: 295, ac: 'Boeing 737-700',   fare: 139, days:[0] },
+    { code: 'WN', num: 1330, dep: '11:45', dur: 240, ac: 'Boeing 737-800',   fare: 149, days:[0,1,2,5] },
+    { code: 'WN', num:  678, dep: '12:20', dur: 245, ac: 'Boeing 737-700',   fare: 145, days:[1,4,5] },
+    { code: 'WN', num:  647, dep: '14:45', dur: 250, ac: 'Boeing 737 MAX 8', fare: 149, days:[1,4,5] },
+    { code: 'WN', num:  647, dep: '12:50', dur: 250, ac: 'Boeing 737 MAX 8', fare: 145, days:[6] },
+    { code: 'WN', num:  673, dep: '17:15', dur: 280, ac: 'Boeing 737-800',   fare: 139, days:[1,4,5] },
+    { code: 'WN', num:  673, dep: '18:25', dur: 280, ac: 'Boeing 737-800',   fare: 135, days:[6] },
+    { code: 'WN', num:  673, dep: '13:45', dur: 280, ac: 'Boeing 737 MAX 8', fare: 139, days:[0] },
+    { code: 'WN', num:  760, dep: '19:15', dur: 275, ac: 'Boeing 737 MAX 8', fare: 145, days:[1,4,5] },
+    { code: 'WN', num: 1010, dep: '13:25', dur: 295, ac: 'Boeing 737 MAX 8', fare: 139, days:[6] },
+    { code: 'WN', num: 1010, dep: '18:30', dur: 295, ac: 'Boeing 737 MAX 8', fare: 135, days:[0] },
     // ── 1-stop ────────────────────────────────────────────────────────────
-    { code: 'AA', num: 1937, dep: '05:01', dur: 454, ac: 'Boeing 737-800',   fare: 259, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 1309, dep: '05:30', dur: 527, ac: 'Airbus A321',      fare: 239, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 2741, dep: '14:18', dur: 408, ac: 'Boeing 737-800',   fare: 269, stops: 1, via: 'DFW' },
-    { code: 'AA', num:  814, dep: '09:05', dur: 443, ac: 'Boeing 737-800',   fare: 279, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 2104, dep: '12:30', dur: 460, ac: 'Airbus A321',      fare: 289, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 3652, dep: '16:50', dur: 485, ac: 'Boeing 737-800',   fare: 269, stops: 1, via: 'DFW' },
-    { code: 'AA', num: 3086, dep: '07:15', dur: 462, ac: 'Boeing 737-800',   fare: 279, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 1418, dep: '07:20', dur: 398, ac: 'Airbus A319',      fare: 269, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 2853, dep: '11:45', dur: 420, ac: 'Boeing 737-800',   fare: 279, stops: 1, via: 'PHX' },
-    { code: 'AA', num:  672, dep: '15:10', dur: 412, ac: 'Airbus A321',      fare: 289, stops: 1, via: 'PHX' },
-    { code: 'AA', num: 1104, dep: '06:55', dur: 380, ac: 'Boeing 737-800',   fare: 289, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 3721, dep: '10:30', dur: 405, ac: 'Airbus A321',      fare: 279, stops: 1, via: 'LAX' },
-    { code: 'AA', num: 2286, dep: '14:55', dur: 425, ac: 'Boeing 737-800',   fare: 269, stops: 1, via: 'LAX' },
-    { code: 'AA', num:  531, dep: '08:15', dur: 460, ac: 'Airbus A321',      fare: 259, stops: 1, via: 'CLT' },
-    { code: 'AA', num: 1864, dep: '17:35', dur: 490, ac: 'Boeing 737-800',   fare: 249, stops: 1, via: 'CLT' },
-    { code: 'WN', num:  485, dep: '05:15', dur: 375, ac: 'Boeing 737-800',   fare: 229, stops: 1, via: 'PHX', days:[1,4,5] },
-    { code: 'WN', num: 3239, dep: '05:00', dur: 375, ac: 'Boeing 737-800',   fare: 219, stops: 1, via: 'PHX', days:[0] },
-    { code: 'WN', num:  540, dep: '07:35', dur: 395, ac: 'Boeing 737-700',   fare: 229, stops: 1, via: 'PHX', days:[0,5] },
-    { code: 'DL', num: 2847, dep: '06:15', dur: 450, ac: 'Airbus A220-300',  fare: 259, stops: 1, via: 'SLC' },
-    { code: 'UA', num: 3281, dep: '06:30', dur: 425, ac: 'Boeing 737-900',   fare: 249, stops: 1, via: 'IAH' },
-    { code: 'UA', num: 2437, dep: '07:40', dur: 454, ac: 'Airbus A320neo',   fare: 259, stops: 1, via: 'DEN' },
-    { code: 'F9', num: 2401, dep: '12:09', dur: 649, ac: 'Airbus A320neo',   fare: 189, stops: 1, via: 'DEN' },
+    { code: 'AA', num: 1937, dep: '05:01', dur: 454, ac: 'Boeing 737-800',   fare: 139, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 1309, dep: '05:30', dur: 527, ac: 'Airbus A321',      fare: 129, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 2741, dep: '14:18', dur: 408, ac: 'Boeing 737-800',   fare: 145, stops: 1, via: 'DFW' },
+    { code: 'AA', num:  814, dep: '09:05', dur: 443, ac: 'Boeing 737-800',   fare: 149, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 2104, dep: '12:30', dur: 460, ac: 'Airbus A321',      fare: 155, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 3652, dep: '16:50', dur: 485, ac: 'Boeing 737-800',   fare: 145, stops: 1, via: 'DFW' },
+    { code: 'AA', num: 3086, dep: '07:15', dur: 462, ac: 'Boeing 737-800',   fare: 149, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 1418, dep: '07:20', dur: 398, ac: 'Airbus A319',      fare: 139, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 2853, dep: '11:45', dur: 420, ac: 'Boeing 737-800',   fare: 145, stops: 1, via: 'PHX' },
+    { code: 'AA', num:  672, dep: '15:10', dur: 412, ac: 'Airbus A321',      fare: 149, stops: 1, via: 'PHX' },
+    { code: 'AA', num: 1104, dep: '06:55', dur: 380, ac: 'Boeing 737-800',   fare: 149, stops: 1, via: 'LAX' },
+    { code: 'AA', num: 3721, dep: '10:30', dur: 405, ac: 'Airbus A321',      fare: 145, stops: 1, via: 'LAX' },
+    { code: 'AA', num: 2286, dep: '14:55', dur: 425, ac: 'Boeing 737-800',   fare: 139, stops: 1, via: 'LAX' },
+    { code: 'AA', num:  531, dep: '08:15', dur: 460, ac: 'Airbus A321',      fare: 135, stops: 1, via: 'CLT' },
+    { code: 'AA', num: 1864, dep: '17:35', dur: 490, ac: 'Boeing 737-800',   fare: 129, stops: 1, via: 'CLT' },
+    { code: 'WN', num:  485, dep: '05:15', dur: 375, ac: 'Boeing 737-800',   fare: 119, stops: 1, via: 'PHX', days:[1,4,5] },
+    { code: 'WN', num: 3239, dep: '05:00', dur: 375, ac: 'Boeing 737-800',   fare: 115, stops: 1, via: 'PHX', days:[0] },
+    { code: 'WN', num:  540, dep: '07:35', dur: 395, ac: 'Boeing 737-700',   fare: 119, stops: 1, via: 'PHX', days:[0,5] },
+    { code: 'DL', num: 2847, dep: '06:15', dur: 450, ac: 'Airbus A220-300',  fare: 139, stops: 1, via: 'SLC' },
+    { code: 'UA', num: 3281, dep: '06:30', dur: 425, ac: 'Boeing 737-900',   fare: 129, stops: 1, via: 'IAH' },
+    { code: 'UA', num: 2437, dep: '07:40', dur: 454, ac: 'Airbus A320neo',   fare: 135, stops: 1, via: 'DEN' },
+    { code: 'F9', num: 2401, dep: '12:09', dur: 649, ac: 'Airbus A320neo',   fare:  99, stops: 1, via: 'DEN' },
   ],
 
   // ── Atlanta ↔ Dallas ──────────────────────────────────────────────────
@@ -628,19 +628,15 @@ const S: Record<string, ScheduledFlight[]> = {
 // Price factor by how many days out the flight is
 function priceFactor(daysOut: number, dow: number): number {
   let f = 1.0
-  if      (daysOut <=  2) f = 3.0
-  else if (daysOut <=  6) f = 2.2
-  else if (daysOut <= 13) f = 1.6
-  else if (daysOut <= 29) f = 1.25
-  else if (daysOut <= 59) f = 1.0
-  else                    f = 0.82
+  if      (daysOut <=  2) f = 1.3
+  else if (daysOut <=  6) f = 1.2
+  else if (daysOut <= 13) f = 1.05
+  else if (daysOut <= 29) f = 1.0
+  else if (daysOut <= 59) f = 0.95
+  else                    f = 0.88
 
   // Weekend premium (Fri = 5, Sun = 0)
-  if (dow === 5 || dow === 0) f *= 1.12
-  // Holiday bump: July 4th week (2026-06-28 through 2026-07-07)
-  if (daysOut >= 0 && daysOut <= 45) {
-    // rough bump if within the window — handled by calling code
-  }
+  if (dow === 5 || dow === 0) f *= 1.03
   return f
 }
 
