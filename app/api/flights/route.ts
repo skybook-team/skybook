@@ -78,7 +78,7 @@ function mapSerpOffer(offer: any, idx: number, date: string): Flight | null {
     const arrUTC = localToUTC(arrDateStr, arrTimeStr, arrTZ)
 
     // Our own pricing — SerpAPI price is intentionally ignored
-    const base         = getBasePrice(durationMinutes, airlineCode)
+    const base         = getBasePrice(durationMinutes, airlineCode, origin.code, destination.code)
     const economyPrice = priceWithNoise(base, date)
     const seatsLeft    = 3 + Math.abs((idx * 17 + durationMinutes) % 32)
 
@@ -187,7 +187,9 @@ function mapAmadeusOffer(offer: any, idx: number, date: string): Flight | null {
       AIRPORTS.find(a => a.code === iata) ?? { code: iata, city: iata, name: `${iata} Airport`, country: 'US', lat: 0, lon: 0 }
 
     const durationMinutes  = parseDuration(itin.duration)
-    const economyPrice     = priceWithNoise(getBasePrice(durationMinutes, code), date)
+    const originAp         = makeAp(first.departure.iataCode)
+    const destinationAp    = makeAp(last.arrival.iataCode)
+    const economyPrice     = priceWithNoise(getBasePrice(durationMinutes, code, originAp.code, destinationAp.code), date)
     const seatsLeft        = offer.numberOfBookableSeats ?? (8 + Math.abs((idx * 17 + 7) % 35))
     const fareDetails      = offer.travelerPricings?.[0]?.fareDetailsBySegment?.[0]
     const includedBags     = fareDetails?.includedCheckedBags?.quantity ?? 0
@@ -199,8 +201,8 @@ function mapAmadeusOffer(offer: any, idx: number, date: string): Flight | null {
       id:              `am-${offer.id}-${idx}`,
       flightNumber:    `${code} ${first.number}`,
       airline,
-      origin:          makeAp(first.departure.iataCode),
-      destination:     makeAp(last.arrival.iataCode),
+      origin:          originAp,
+      destination:     destinationAp,
       departureTime:   first.departure.at,
       arrivalTime:     last.arrival.at,
       durationMinutes,

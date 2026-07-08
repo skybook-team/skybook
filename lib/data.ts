@@ -389,7 +389,14 @@ function getBaseDuration(from: string, to: string): number {
   return Math.round(miles / 530 * 60 + 45)
 }
 
-export function getBasePrice(durationMinutes: number, airlineCode: string): number {
+// Per-route discount applied on top of the duration/airline tiers, for routes
+// that are known to run cheaper than the generic curve (e.g. dense, competitive
+// short-haul routes with lots of low-cost-carrier capacity).
+const ROUTE_PRICE_FACTOR: Record<string, number> = {
+  'SFO-LAX': 0.84, 'LAX-SFO': 0.84,
+}
+
+export function getBasePrice(durationMinutes: number, airlineCode: string, origin?: string, destination?: string): number {
   let base: number
   if      (durationMinutes < 90)  base = 59
   else if (durationMinutes < 150) base = 89
@@ -399,7 +406,8 @@ export function getBasePrice(durationMinutes: number, airlineCode: string): numb
   else if (durationMinutes < 600) base = 189
   else if (durationMinutes < 720) base = 209
   else                            base = 239
-  return Math.round(base * (AIRLINE_PRICE_FACTOR[airlineCode] ?? 1.0))
+  const routeFactor = (origin && destination) ? (ROUTE_PRICE_FACTOR[`${origin}-${destination}`] ?? 1.0) : 1.0
+  return Math.round(base * (AIRLINE_PRICE_FACTOR[airlineCode] ?? 1.0) * routeFactor)
 }
 
 function seededRand(seed: string): () => number {
@@ -494,7 +502,7 @@ export function generateFlights(from: string, to: string, date: string): Flight[
     const stops = stopsRoll < nonStopChance ? 0 : stopsRoll < 0.85 ? 1 : 2
     const stopCity = stopOptions[Math.floor(r() * stopOptions.length)]
 
-    const base = getBasePrice(duration, airline.code)
+    const base = getBasePrice(duration, airline.code, from, to)
     const priceVariance = 0.80 + r() * 0.55
     const economyPrice = Math.round(base * priceVariance * 100) / 100
     const seatsLeft = 1 + Math.floor(r() * 42)
