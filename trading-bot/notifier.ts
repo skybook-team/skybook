@@ -11,40 +11,18 @@ const STRATEGY_LABELS: Record<string, string> = {
 
 export async function sendTradeAlert(trade: Trade): Promise<void> {
   const label = STRATEGY_LABELS[trade.strategy] ?? trade.strategy
-  const title = `${trade.ticker} — ${label}`
-  const signal = trade.signals.map(s => s.detail).join(' · ')
-  const expiry = trade.legs[0]?.expiration ?? '?'
-
-  const body = [
-    signal,
-    `Max Loss: $${trade.maxLoss} | Max Profit: $${trade.maxProfit}`,
-    `Stock @ $${trade.price.toFixed(2)} | Exp: ${expiry}`,
-    `Tap to approve →`,
-  ].join('\n')
+  const signals = trade.signals.map(s => s.detail).join(' · ')
 
   await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
     method: 'POST',
     headers: {
-      Title: title,
+      Title: `${trade.ticker} — ${label}`,
       Priority: 'high',
       Tags: 'chart_with_upwards_trend',
       Click: `${APP_URL}/trading?id=${trade.id}`,
       'Content-Type': 'text/plain',
     },
-    body,
-  })
-}
-
-export async function sendOrderConfirmation(trade: Trade): Promise<void> {
-  await fetch(`https://ntfy.sh/${NTFY_TOPIC}`, {
-    method: 'POST',
-    headers: {
-      Title: `✅ ${trade.ticker} order placed`,
-      Priority: 'default',
-      Tags: 'white_check_mark',
-      'Content-Type': 'text/plain',
-    },
-    body: `${trade.strategy} executed. Max loss: $${trade.maxLoss}`,
+    body: `${signals}\nStock @ $${trade.price.toFixed(2)}\nOpen your broker to place the trade.`,
   })
 }
 

@@ -13,14 +13,16 @@ const STRATEGY_LABEL: Record<string, string> = {
 
 const STATUS_COLOR: Record<string, string> = {
   PENDING: 'bg-yellow-100 text-yellow-800',
-  APPROVED: 'bg-blue-100 text-blue-800',
-  REJECTED: 'bg-gray-100 text-gray-600',
-  EXECUTED: 'bg-green-100 text-green-800',
-  FAILED: 'bg-red-100 text-red-800',
+  DONE: 'bg-green-100 text-green-800',
+  DISMISSED: 'bg-gray-100 text-gray-500',
 }
 
-function isBullish(s: string) {
-  return s.startsWith('BULL')
+const DIR_COLOR: Record<string, string> = {
+  BULL_CALL_SPREAD: 'text-green-600',
+  BULL_PUT_SPREAD: 'text-green-600',
+  BEAR_PUT_SPREAD: 'text-red-600',
+  BEAR_CALL_SPREAD: 'text-red-600',
+  IRON_CONDOR: 'text-purple-600',
 }
 
 export default function TradingPage() {
@@ -38,7 +40,6 @@ export default function TradingPage() {
 
   useEffect(() => { load() }, [load])
 
-  // Auto-select highlighted trade from push notification link
   useEffect(() => {
     const id = new URLSearchParams(window.location.search).get('id')
     if (id) {
@@ -65,11 +66,11 @@ export default function TradingPage() {
   const history = trades.filter(t => t.status !== 'PENDING')
 
   return (
-    <div className="max-w-3xl mx-auto px-4 py-8">
+    <div className="max-w-2xl mx-auto px-4 py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Trading Bot</h1>
-          <p className="text-sm text-gray-500 mt-0.5">All strategies are defined-risk</p>
+          <h1 className="text-2xl font-bold text-gray-900">Trade Signals</h1>
+          <p className="text-sm text-gray-500 mt-0.5">AI-detected signals — place orders in your broker</p>
         </div>
         <button
           onClick={triggerScan}
@@ -86,7 +87,7 @@ export default function TradingPage() {
 
       {!loading && pending.length === 0 && (
         <div className="bg-gray-50 rounded-xl border border-dashed border-gray-200 p-10 text-center text-gray-400 text-sm mb-8">
-          No pending alerts — bot will push a notification when a signal fires.
+          No pending signals — bot will push a notification when a signal fires.
         </div>
       )}
 
@@ -101,8 +102,8 @@ export default function TradingPage() {
                 key={t.id}
                 trade={t}
                 acting={acting === t.id}
-                onApprove={() => act(t.id, 'approve')}
-                onReject={() => act(t.id, 'reject')}
+                onDone={() => act(t.id, 'approve')}
+                onDismiss={() => act(t.id, 'reject')}
               />
             ))}
           </div>
@@ -129,20 +130,15 @@ function TradeCard({
   trade: t,
   compact,
   acting,
-  onApprove,
-  onReject,
+  onDone,
+  onDismiss,
 }: {
   trade: Trade
   compact?: boolean
   acting?: boolean
-  onApprove?: () => void
-  onReject?: () => void
+  onDone?: () => void
+  onDismiss?: () => void
 }) {
-  const bull = isBullish(t.strategy)
-  const dirColor = t.strategy === 'IRON_CONDOR'
-    ? 'text-purple-600'
-    : bull ? 'text-green-600' : 'text-red-600'
-
   return (
     <div
       id={`trade-${t.id}`}
@@ -151,16 +147,18 @@ function TradeCard({
       <div className="flex items-start justify-between gap-3 mb-3">
         <div>
           <span className="text-lg font-bold text-gray-900">{t.ticker}</span>
-          <span className={`ml-2 text-sm font-semibold ${dirColor}`}>
+          <span className={`ml-2 text-sm font-semibold ${DIR_COLOR[t.strategy] ?? 'text-gray-600'}`}>
             {STRATEGY_LABEL[t.strategy]}
           </span>
         </div>
-        <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[t.status]}`}>
-          {t.status}
-        </span>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-sm font-semibold text-gray-700">${t.price.toFixed(2)}</span>
+          <span className={`text-xs font-medium px-2 py-0.5 rounded-full ${STATUS_COLOR[t.status] ?? 'bg-gray-100 text-gray-500'}`}>
+            {t.status}
+          </span>
+        </div>
       </div>
 
-      {/* Signals */}
       <div className="flex flex-wrap gap-1.5 mb-3">
         {t.signals.map((s, i) => (
           <span key={i} className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">
@@ -169,46 +167,21 @@ function TradeCard({
         ))}
       </div>
 
-      {/* Risk */}
-      <div className="grid grid-cols-3 gap-3 mb-3 text-center">
-        <RiskStat label="Max Loss" value={`$${t.maxLoss}`} danger />
-        <RiskStat label="Max Profit" value={`$${t.maxProfit}`} />
-        <RiskStat label="Stock Price" value={`$${t.price.toFixed(2)}`} />
-      </div>
-
-      {/* Legs */}
-      {!compact && (
-        <div className="border-t border-gray-100 pt-3 mt-1 space-y-1">
-          {t.legs.map((leg, i) => (
-            <div key={i} className="flex justify-between text-xs text-gray-500">
-              <span>
-                <span className={leg.action === 'buy' ? 'text-green-600 font-medium' : 'text-red-600 font-medium'}>
-                  {leg.action.toUpperCase()}
-                </span>
-                {' '}{leg.type.toUpperCase()} ${leg.strike} exp {leg.expiration}
-              </span>
-              <span>${leg.price.toFixed(2)}</span>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* Actions */}
-      {t.status === 'PENDING' && onApprove && onReject && (
+      {t.status === 'PENDING' && !compact && onDone && onDismiss && (
         <div className="flex gap-2 mt-4">
           <button
-            onClick={onApprove}
+            onClick={onDone}
             disabled={acting}
             className="flex-1 py-2 bg-green-600 text-white text-sm font-semibold rounded-lg hover:bg-green-700 disabled:opacity-50 transition-colors"
           >
-            {acting ? '…' : '✓ Approve & Execute'}
+            {acting ? '…' : '✓ Placed in broker'}
           </button>
           <button
-            onClick={onReject}
+            onClick={onDismiss}
             disabled={acting}
             className="flex-1 py-2 bg-gray-100 text-gray-700 text-sm font-semibold rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors"
           >
-            ✕ Reject
+            ✕ Dismiss
           </button>
         </div>
       )}
@@ -216,17 +189,6 @@ function TradeCard({
       {t.error && (
         <p className="mt-2 text-xs text-red-500 truncate" title={t.error}>{t.error}</p>
       )}
-    </div>
-  )
-}
-
-function RiskStat({ label, value, danger }: { label: string; value: string; danger?: boolean }) {
-  return (
-    <div className="bg-gray-50 rounded-lg py-2 px-3">
-      <p className="text-xs text-gray-400">{label}</p>
-      <p className={`text-sm font-bold mt-0.5 ${danger ? 'text-red-600' : 'text-gray-800'}`}>
-        {value}
-      </p>
     </div>
   )
 }
