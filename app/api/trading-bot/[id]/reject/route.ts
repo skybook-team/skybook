@@ -13,6 +13,6 @@ export async function POST(
     return NextResponse.json({ error: `Trade already ${trade.status}` }, { status: 409 })
   }
 
-  const updated = updateTradeStatus(id, { status: 'REJECTED' })
+  const updated = updateTradeStatus(id, { status: 'DISMISSED' })
   return NextResponse.json({ trade: updated })
 }

@@ -1,26 +1,14 @@
 import type { Signal } from './types'
 import { rsi, ema, high20, low20 } from './indicators'
-import {
-  RSI_OVERSOLD, RSI_OVERBOUGHT, EARNINGS_WINDOW_DAYS,
-} from './config'
-
-function daysUntil(dateStr: string): number {
-  return Math.round(
-    (new Date(dateStr).getTime() - Date.now()) / 86_400_000,
-  )
-}
+import { RSI_OVERSOLD, RSI_OVERBOUGHT } from './config'
 
 export function detectSignals(
   ticker: string,
   closes: number[],
   currentPrice: number,
-  earningsDate: string | null,
-  currentIV: number,
-  ivRankValue: number,
 ): Signal[] {
   const signals: Signal[] = []
 
-  // RSI
   const rsiVal = rsi(closes)
   if (rsiVal < RSI_OVERSOLD) {
     signals.push({
@@ -38,8 +26,7 @@ export function detectSignals(
     })
   }
 
-  // 20-day breakout
-  const h = high20(closes.slice(0, -1)) // yesterday's 20-day high
+  const h = high20(closes.slice(0, -1))
   const l = low20(closes.slice(0, -1))
   if (currentPrice > h) {
     signals.push({
@@ -57,50 +44,16 @@ export function detectSignals(
     })
   }
 
-  // EMA crossover
   const ema9 = ema(closes, 9)
   const ema21 = ema(closes, 21)
   if (ema9.length >= 2 && ema21.length >= 2) {
     const [prevFast, currFast] = ema9.slice(-2)
     const [prevSlow, currSlow] = ema21.slice(-2)
     if (prevFast <= prevSlow && currFast > currSlow) {
-      signals.push({
-        type: 'MA_CROSS_GOLDEN',
-        ticker,
-        detail: `EMA(9) crossed above EMA(21)`,
-        strength: 0.7,
-      })
+      signals.push({ type: 'MA_CROSS_GOLDEN', ticker, detail: 'EMA(9) crossed above EMA(21)', strength: 0.7 })
     } else if (prevFast >= prevSlow && currFast < currSlow) {
-      signals.push({
-        type: 'MA_CROSS_DEATH',
-        ticker,
-        detail: `EMA(9) crossed below EMA(21)`,
-        strength: 0.7,
-      })
+      signals.push({ type: 'MA_CROSS_DEATH', ticker, detail: 'EMA(9) crossed below EMA(21)', strength: 0.7 })
     }
-  }
-
-  // Earnings proximity
-  if (earningsDate) {
-    const days = daysUntil(earningsDate)
-    if (days >= 0 && days <= EARNINGS_WINDOW_DAYS) {
-      signals.push({
-        type: 'EARNINGS_NEARBY',
-        ticker,
-        detail: `Earnings in ${days} day${days === 1 ? '' : 's'} (${earningsDate})`,
-        strength: 1 - days / EARNINGS_WINDOW_DAYS,
-      })
-    }
-  }
-
-  // IV spike
-  if (ivRankValue >= 0.5) {
-    signals.push({
-      type: 'IV_SPIKE',
-      ticker,
-      detail: `IV rank ${(ivRankValue * 100).toFixed(0)}% — elevated premium`,
-      strength: ivRankValue,
-    })
   }
 
   return signals
@@ -108,22 +61,10 @@ export function detectSignals(
 
 export function isBullish(signals: Signal[]): boolean {
   const types = signals.map(s => s.type)
-  return types.includes('RSI_OVERSOLD') ||
-    types.includes('BREAKOUT_UP') ||
-    types.includes('MA_CROSS_GOLDEN')
+  return types.includes('RSI_OVERSOLD') || types.includes('BREAKOUT_UP') || types.includes('MA_CROSS_GOLDEN')
 }
 
 export function isBearish(signals: Signal[]): boolean {
   const types = signals.map(s => s.type)
-  return types.includes('RSI_OVERBOUGHT') ||
-    types.includes('BREAKOUT_DOWN') ||
-    types.includes('MA_CROSS_DEATH')
-}
-
-export function isHighIV(signals: Signal[]): boolean {
-  return signals.some(s => s.type === 'IV_SPIKE')
-}
-
-export function isEarningsPlay(signals: Signal[]): boolean {
-  return signals.some(s => s.type === 'EARNINGS_NEARBY')
+  return types.includes('RSI_OVERBOUGHT') || types.includes('BREAKOUT_DOWN') || types.includes('MA_CROSS_DEATH')
 }

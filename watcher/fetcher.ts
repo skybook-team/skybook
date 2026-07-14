@@ -1,23 +1,22 @@
-import { RH_TOKEN, RH_BASE } from '../trading-bot/config'
 import { rsi } from '../trading-bot/indicators'
 
 export interface TickerSnapshot {
   ticker: string
   price: number
-  change1d: number   // % change today
-  change5d: number   // % change over 5 days
+  change1d: number
+  change5d: number
   rsi14: number
   trend: 'up' | 'down' | 'flat'
-  news: string[]     // recent headlines
+  news: string[]
 }
 
-async function rhGet<T>(path: string): Promise<T> {
-  const res = await fetch(`${RH_BASE}${path}`, {
-    headers: { Authorization: `Bearer ${RH_TOKEN}`, Accept: 'application/json' },
-    next: { revalidate: 0 },
-  })
-  if (!res.ok) throw new Error(`RH ${path} → ${res.status}`)
-  return res.json() as Promise<T>
+async function yahooChart(ticker: string) {
+  const res = await fetch(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=3mo`,
+    { headers: { 'User-Agent': 'Mozilla/5.0' }, next: { revalidate: 0 } },
+  )
+  if (!res.ok) throw new Error(`Yahoo ${ticker} → ${res.status}`)
+  return res.json()
 }
 
 async function fetchNews(ticker: string): Promise<string[]> {
@@ -36,28 +35,22 @@ async function fetchNews(ticker: string): Promise<string[]> {
 }
 
 export async function fetchSnapshot(ticker: string): Promise<TickerSnapshot> {
-  const [quoteData, histData, news] = await Promise.all([
-    rhGet<{ results: Array<{ last_trade_price: string; previous_close: string }> }>(
-      `/quotes/?symbols=${ticker}`
-    ),
-    rhGet<{ results: Array<{ historicals: Array<{ close_price: string }> }> }>(
-      `/historicals/?symbols=${ticker}&interval=day&span=month&bounds=regular`
-    ),
-    fetchNews(ticker),
-  ])
+  const [chartData, news] = await Promise.all([yahooChart(ticker), fetchNews(ticker)])
 
-  const q = quoteData.results[0]
-  const price = parseFloat(q.last_trade_price)
-  const prevClose = parseFloat(q.previous_close)
+  const result = chartData?.chart?.result?.[0]
+  if (!result) throw new Error(`No chart data for ${ticker}`)
+
+  const price: number = result.meta.regularMarketPrice
+  const prevClose: number = result.meta.previousClose ?? result.meta.chartPreviousClose ?? price
   const change1d = ((price - prevClose) / prevClose) * 100
 
-  const closes = histData.results[0].historicals.map(h => parseFloat(h.close_price))
+  const closes: number[] = (result.indicators.quote[0].close as (number | null)[])
+    .filter((c): c is number => c !== null)
+
   const price5dAgo = closes.at(-6) ?? closes[0]
   const change5d = ((price - price5dAgo) / price5dAgo) * 100
   const rsi14 = rsi(closes)
-
-  const trend: TickerSnapshot['trend'] =
-    change5d > 1 ? 'up' : change5d < -1 ? 'down' : 'flat'
+  const trend: TickerSnapshot['trend'] = change5d > 1 ? 'up' : change5d < -1 ? 'down' : 'flat'
 
   return { ticker, price, change1d, change5d, rsi14, trend, news }
 }
