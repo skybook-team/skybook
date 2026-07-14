@@ -5,7 +5,7 @@
       "schedule": "* 14-21 * * 1-5"
     },
     {
-      "path": "/api/watcher/scan?secret=REPLACE_WITH_BOT_SECRET",
+      "path": "/api/watcher/scan?secret=iTFe8aljc4MuUQrI0QLY9ptCd-11i7u1",
       "schedule": "*/15 14-21 * * 1-5"
     }
   ]
